@@ -5,7 +5,7 @@
 typedef struct TILE {
    char name[20];
    int id, count, i, j, k, x, y;
-   
+   bool access = false;
    IMAGE * bmp;
    }Tile;
 

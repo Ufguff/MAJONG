@@ -85,8 +85,30 @@ void new_game(){
                   tile.k = k;
                   tile.x = begOfX + (i * tileW) + k*2;
                   tile.y = begOfY + (tileH * j) - k*2;
-                  
                   tile.bmp = library[layout[0].first].bmp;
+                  switch(k){
+                  case 4:
+                     tile.access = true;
+                     break;
+                  case 3:
+                     if ((i == 3 && i == 5))    tile.access = true;
+                  
+                     break;
+                  case 2:
+                     if ((i == 2 && i == 6))    tile.access = true;
+
+                     break;
+                  case 1:
+                     if (i == 1 || i == 7)      tile.access = true;
+                     else if((i == 2 || i == 6) && (j == 0 || j == 6))  tile.access = true;
+
+                     break;
+                  case 0:
+                     if (i == 0 || i == 8)    tile.access = true;
+
+                     break;
+                  }
+                  
                   if (tile.bmp == 0)        { printf("Нет картинки %d %s\n",CON_TILES, tile.name);   exit(1);}
                   layout.erase(layout.begin());
                   tiles.push_back(tile);
@@ -177,25 +199,32 @@ while(1)
       if (Pole[i1][j1][k1] == Pole[i2][j2][k2])     //добавить удаление картинок
       {
             delete_pair(Pole[i1][j1][k1], i1, j1, k1, Pole[i2][j2][k2], i2, j2, k2);
-            Pole[i1][j1][k1] = -1; 
-            Pole[i2][j2][k2] = -1;
-            CON_TILES -= 2;
-            draw_pole();
       }
       
       clickXY.clear();
    }
 }   
 
-void delete_pair(int id1,int i1, int j1, int k1, int id2, int i2, int j2, int k2)       
+void delete_pair(int id1,int i1, int j1, int k1, int id2, int i2, int j2, int k2)  //некоторые активирует, надо отладить куда true + смещение     
 {
    vector<TILE> temp;
    for(int i = 0; i < tiles.size(); i++)
    {
       if (!((tiles[i].id == Pole[i1][j1][k1] && tiles[i].i == i1 && tiles[i].j == j1 && tiles[i].k == k1) || 
          (tiles[i].id == Pole[i2][j2][k2] && tiles[i].i == i2 && tiles[i].j == j2 && tiles[i].k == k2)))       temp.push_back(tiles[i]);
+      else { 
+         if(tiles[i].access != true)
+         {
+            temp.clear();
+            return;
+         }
+      }
    }
    tiles = temp;
+   Pole[i1][j1][k1] = -1; 
+   Pole[i2][j2][k2] = -1;
+   CON_TILES -= 2;
+   draw_pole();
 }
 
    

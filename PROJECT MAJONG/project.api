@@ -54,6 +54,7 @@ width #<menu.h>
 	TILE::k : int #<new_game.h>
 	TILE::x : int #<new_game.h>
 	TILE::y : int #<new_game.h>
+	TILE::access : bool #<new_game.h>
 	TILE::bmp : IMAGE* #<new_game.h>
 	button::x : int #<menu.h>
 	button::y : int #<menu.h>
