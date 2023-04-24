@@ -11,7 +11,7 @@
 #include "graphics.h"
 
 using namespace std;
-const int le = 13, wi = 7, he = 5;      // размеры пирамиды
+const int le = 9, wi = 7, he = 5;      // размеры пирамиды
 int Pole[le][wi][he];     // под пирамиду
 int CON_TILES = 144;
 const int tileW = 45, tileH = 55;
@@ -45,25 +45,24 @@ void new_game(){
          {
             switch(k){
             case 4:
-               if((i == 6 && j == 3) || (i == 6 && j == 2))     Pole[i][j][k] = 0;
+               if((i == 4 && j == 3) || (i == 4 && j == 2))     Pole[i][j][k] = 0;
                else     Pole[i][j][k] = -1;
                break;
             case 3:
-               if ((i >= 5 && i <= 7) && (j >= 2 && j <= 4))    Pole[i][j][k] = 0;
+               if ((i >= 3 && i <= 5) && (j >= 2 && j <= 4))    Pole[i][j][k] = 0;
                else     Pole[i][j][k] = -1;
                break;
             case 2:
-               if ((i >= 4 && i <= 8) && (j >= 1 && j <= 5))    Pole[i][j][k] = 0;
+               if ((i >= 2 && i <= 6) && (j >= 1 && j <= 5))    Pole[i][j][k] = 0;
                else     Pole[i][j][k] = -1;
                break;
             case 1:
-               if ((i >= 4 && i <= 8))  Pole[i][j][k] = 0;
-               else if ((i == 3) && (j >= 1 && j <= 5) || (i == 9) && (j >= 1 && j <= 5))       Pole[i][j][k] = 0;
+               if ((i >= 2 && i <= 6))  Pole[i][j][k] = 0;
+               else if ((i == 1) && (j >= 1 && j <= 5) || (i == 7) && (j >= 1 && j <= 5))       Pole[i][j][k] = 0;
                else     Pole[i][j][k] = -1;
                break;
             case 0:
-               if (i >= 2 && i <= 10)      Pole[i][j][k] = 0;
-               else     Pole[i][j][k] = -1;
+               Pole[i][j][k] = 0;   // 2            10
                break;
             }
          

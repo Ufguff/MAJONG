@@ -4,8 +4,8 @@
 
 typedef struct TILE {
    char name[20];
-   int id, count, i, j, k;
-   int x, y;
+   int id, count, i, j, k, x, y;
+   
    IMAGE * bmp;
    }Tile;
 
