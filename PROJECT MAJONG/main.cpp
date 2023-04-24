@@ -5,7 +5,7 @@ void init();
 void rules();
 void about();
 void close_game();
-
+//пасхалка для git
 int main()
 {
    int st = 1;
