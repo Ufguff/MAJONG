@@ -12,7 +12,7 @@
 
 using namespace std;
 const int le = 9, wi = 7, he = 5;      // размеры пирамиды
-int Pole[le][wi][he];     // под пирамиду
+TILE Pole[le][wi][he];     // под пирамиду
 int CON_TILES = 144;
 const int tileW = 45, tileH = 55;
 vector <pair<int, int>> layout;
@@ -45,24 +45,24 @@ void new_game(){
          {
             switch(k){
             case 4:
-               if((i == 4 && j == 3) || (i == 4 && j == 2))     Pole[i][j][k] = 0;
-               else     Pole[i][j][k] = -1;
+               if((i == 4 && j == 3) || (i == 4 && j == 2))     Pole[i][j][k].id = 0;
+               else     Pole[i][j][k].id = -1;
                break;
             case 3:
-               if ((i >= 3 && i <= 5) && (j >= 2 && j <= 4))    Pole[i][j][k] = 0;
-               else     Pole[i][j][k] = -1;
+               if ((i >= 3 && i <= 5) && (j >= 2 && j <= 4))    Pole[i][j][k].id = 0;
+               else     Pole[i][j][k].id = -1;
                break;
             case 2:
-               if ((i >= 2 && i <= 6) && (j >= 1 && j <= 5))    Pole[i][j][k] = 0;
-               else     Pole[i][j][k] = -1;
+               if ((i >= 2 && i <= 6) && (j >= 1 && j <= 5))    Pole[i][j][k].id = 0;
+               else     Pole[i][j][k].id = -1;
                break;
             case 1:
-               if ((i >= 2 && i <= 6))  Pole[i][j][k] = 0;
-               else if ((i == 1) && (j >= 1 && j <= 5) || (i == 7) && (j >= 1 && j <= 5))       Pole[i][j][k] = 0;
-               else     Pole[i][j][k] = -1;
+               if ((i >= 2 && i <= 6))  Pole[i][j][k].id = 0;
+               else if ((i == 1) && (j >= 1 && j <= 5) || (i == 7) && (j >= 1 && j <= 5))       Pole[i][j][k].id = 0;
+               else     Pole[i][j][k].id = -1;
                break;
             case 0:
-               Pole[i][j][k] = 0;   // 2            10
+               Pole[i][j][k].id = 0;   // 2            10
                break;
             }
          
@@ -70,50 +70,50 @@ void new_game(){
             debug();// печать
             
             printf("\n//==============заполнение маджонга фишками\n");
-      TILE tile;
       for(int k = 0; k < he; k++)
          for(int j = 0; j < wi; j++)
             for(int i = 0; i < le; i++)
             {
-               if (Pole[i][j][k] == 0)  {       
-                  //printf("%d %d\n", layout.size(), layout[0].first);
-                  Pole[i][j][k] = layout[0].first;
-                  tile.id = layout[0].first;
-                  strcpy(tile.name, library[layout[0].first].name);
-                  tile.i = i;
-                  tile.j = j;
-                  tile.k = k;
-                  tile.x = begOfX + (i * tileW) + k*2;
-                  tile.y = begOfY + (tileH * j) - k*2;
-                  tile.bmp = library[layout[0].first].bmp;
+               if (Pole[i][j][k].id == 0)  {       
+                  Pole[i][j][k].id = layout[0].first;
+                  strcpy(Pole[i][j][k].name, library[layout[0].first].name);
+                  Pole[i][j][k].x = begOfX + (i * tileW) + k*2;
+                  Pole[i][j][k].y = begOfY + (tileH * j) - k*2;
+                  Pole[i][j][k].bmp = library[layout[0].first].bmp;
                   switch(k){
                   case 4:
-                     tile.access = true;
+                     if ((i == 4 && j == 3) || (i == 4 && j == 2)) Pole[i][j][k].access = true;
                      break;
                   case 3:
-                     if ((i == 3 && i == 5))    tile.access = true;
+                     if ((i == 3 || i == 5))    Pole[i][j][k].access = true;
+                     else Pole[i][j][k].access = false;
                      break;
                   case 2:
-                     if ((i == 2 && i == 6))    tile.access = true;
+                     if ((i == 2 || i == 6))    Pole[i][j][k].access = true;
+                     else Pole[i][j][k].access = false;
                      break;
                   case 1:
-                     if (i == 1 || i == 7)      tile.access = true;
-                     else if((i == 2 || i == 6) && (j == 0 || j == 6))  tile.access = true;
+                     if (i == 1 || i == 7)      Pole[i][j][k].access = true;
+                     else if((i == 2 || i == 6) && (j == 0 || j == 6))  Pole[i][j][k].access = true;
+                     else Pole[i][j][k].access = false;
                      break;
                   case 0:
-                     if (j == 0 && j == 8)    tile.access = true;
+                     if (i == 0 || i == 8)    Pole[i][j][k].access = true;
+                     else Pole[i][j][k].access = false;
                      break;
                   }
                   
-                  if (tile.bmp == 0)        { printf("Нет картинки %d %s\n",CON_TILES, tile.name);   exit(1);}
+                  cout << Pole[i][j][k].access << endl;
+                  if (Pole[i][j][k].bmp == 0)        { printf("Нет картинки %d %s\n",CON_TILES, Pole[i][j][k].name);   exit(1);}
                   layout.erase(layout.begin());
-                  tiles.push_back(tile);
+                  tiles.push_back(Pole[i][j][k]);
                } 
             }
             
-            /*
+            
             //всякие дебаги
             debug();
+            /*
             if(layout.size() == 0) printf("YYYEEEEAH");
             else {
                printf(":(\n");
@@ -124,10 +124,10 @@ void new_game(){
    
 void draw_pole(){
    clearviewport();
-   
-   for(int i = 0; i < CON_TILES; i++){
-        putimage(tiles[i].x, tiles[i].y, tiles[i].bmp, TRANSPARENT_PUT);      
-   }
+   for(int k = 0; k < he; k++)
+         for(int j = 0; j < wi; j++)
+            for(int i = 0; i < le; i++)
+                 {      if (Pole[i][j][k].id != -1) putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
    }
 
 
@@ -163,7 +163,8 @@ void init_menu_pole(){
 void core_game()
 {
    int i1, i2, j1, j2, k1, k2;
-while(1)
+   
+   while(1)
    {
       for (int i = 0; i < 2; i++)
       {
@@ -175,44 +176,38 @@ while(1)
       i1 = clickXY[0].first;       i2 = clickXY[1].first;          j1 = clickXY[0].second;         j2 = clickXY[1].second;
       
       for (int k = he - 1; k >= 0; k--) {
-         if(Pole[i1][j1][k] == -1)      continue;
-         else{printf("\n%d", Pole[i1][j1][k]);  k1 = k; break;}
+         if(Pole[i1][j1][k].id == -1)      continue;
+         else{printf("\n%d", Pole[i1][j1][k].id);  k1 = k; break;}
          }
          
       for (int k = he - 1; k >= 0; k--)  {
-         if(Pole[i2][j2][k] == -1)      continue;
-         else{printf("\n%d", Pole[i2][j2][k]);  k2 = k; break;}
+         if(Pole[i2][j2][k].id == -1)      continue;
+         else{printf("\n%d", Pole[i2][j2][k].id);  k2 = k; break;}
          }
       
       if (i1 == i2 && j1 == j2 && k1 == k2)    {clickXY.clear();        continue;}      //если одна и та же фишка
          
-      printf("---- %d %d ----- %d %d\n", Pole[i1][j1][k1], Pole[i2][j2][k2], k1, k2);
-
       //реализовать фишки времен года
       // реализация границ определения ??????????
       // время, очки
       
-      if (Pole[i1][j1][k1] == Pole[i2][j2][k2] )     //добавить удаление картинок
-      {
-            delete_pair(Pole[i1][j1][k1], i1, j1, k1, Pole[i2][j2][k2], i2, j2, k2);
-            Pole[i1][j1][k1] = -1; 
-            Pole[i2][j2][k2] = -1;
-            CON_TILES -= 2;
-            draw_pole();
-      }
+      
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
+         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
       
       clickXY.clear();
    }
 }   
 
-void delete_pair(int id1,int i1, int j1, int k1, int id2, int i2, int j2, int k2)       
+void delete_pair(TILE *tile1, TILE *tile2)  //смещение     
 {
-   vector<TILE> temp;
-   for(int i = 0; i < tiles.size(); i++)
-   {
-      if (!((tiles[i].id == Pole[i1][j1][k1] && tiles[i].i == i1 && tiles[i].j == j1 && tiles[i].k == k1) || 
-         (tiles[i].id == Pole[i2][j2][k2] && tiles[i].i == i2 && tiles[i].j == j2 && tiles[i].k == k2)))       temp.push_back(tiles[i]);
-      else { 
-         if(tiles[i].access == false)
-         {
-            _abracadabra_cast(temp);
+      TILE temp;   temp.id = -1;
+      *(tile1) = temp;
+      *(tile2) = temp;
+      CON_TILES -= 2;
+      draw_pole();
+}
+
+bool is_season(TILE tile1, TILE tile2)  //мб проработать
+{
+   if(tile1.id || _abracadabra_cast(tile2);

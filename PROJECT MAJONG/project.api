@@ -9,7 +9,7 @@ AVOCADO #<new_game.h>
 CON_TILES : int #<new_game.cpp>
 ELVOLT #<menu.h>
 FONTS #<menu.h>
-Pole : const intwi=7, he=5;int[][][] #<new_game.cpp>
+Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
 TILE _type_ #<new_game.h>
 about() -> void #<main.cpp>
 begOfX : int #<new_game.cpp>
@@ -22,7 +22,7 @@ clickXY : vector #<new_game.cpp>
 close_game() -> void #<main.cpp>
 core_game() -> void #<new_game.h>
 debug() -> void #<new_game.h>
-delete_pair(int id1, int i1, int j1, int k1, int id2, int i2, int j2, int k2) -> void #<new_game.h>
+delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
 height #<menu.h>
@@ -32,6 +32,7 @@ init_menu : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2
 init_menu() -> void #<menu.h>
 init_menu_pole() -> void #<new_game.h>
 ins : button #<menu.cpp>
+is_season(TILE tile1, TILE tile2) -> bool #<new_game.h>
 layout : const inttileH=55;vector #<new_game.cpp>
 le : const int #<new_game.cpp>
 library : TILE[] #<new_game.cpp>
@@ -49,9 +50,6 @@ width #<menu.h>
 	TILE::name : char[] #<new_game.h>
 	TILE::id : int #<new_game.h>
 	TILE::count : int #<new_game.h>
-	TILE::i : int #<new_game.h>
-	TILE::j : int #<new_game.h>
-	TILE::k : int #<new_game.h>
 	TILE::x : int #<new_game.h>
 	TILE::y : int #<new_game.h>
 	TILE::access : bool #<new_game.h>
