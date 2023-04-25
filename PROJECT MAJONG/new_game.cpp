@@ -102,10 +102,11 @@ void new_game(){
                      else Pole[i][j][k].access = false;
                      break;
                   }
+                  layout.erase(layout.begin());
                   
                   cout << Pole[i][j][k].access << endl;
                   if (Pole[i][j][k].bmp == 0)        { printf("Ќет картинки %d %s\n",CON_TILES, Pole[i][j][k].name);   exit(1);}
-                  layout.erase(layout.begin());
+                  
                   tiles.push_back(Pole[i][j][k]);
                } 
             }
@@ -188,7 +189,6 @@ void core_game()
       if (i1 == i2 && j1 == j2 && k1 == k2)    {clickXY.clear();        continue;}      //если одна и та же фишка
          
       // реализаци€ границ определени€ ??????????
-      // врем€, очки
       
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
