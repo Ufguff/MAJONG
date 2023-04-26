@@ -213,7 +213,8 @@ void delete_pair(TILE *tile1, TILE *tile2)  //смещение
 
 bool is_season(TILE tile1, TILE tile2)  //всё гуд но нужно протестить
 {
-   if(tile1.id >= 34 && tile2.id >= 34)  return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
+   if(tile1.id >= 34 && tile2.id >= 34)  
+      return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
 }
 
 void gain_access(TILE *tile1)
