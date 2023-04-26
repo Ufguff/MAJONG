@@ -14,12 +14,11 @@ void init_menu_pole();
 void draw_pole();
 void init_game();
 void maj_init();
-void debug();
    
 void core_game();
-void click();
+void click(int *i, int *j);
 void delete_pair(TILE *tile1, TILE *tile2);
 void gain_access(TILE *tile1);
-   
 bool is_season(TILE tile1, TILE tile2);
+void acc_avl();
 #endif

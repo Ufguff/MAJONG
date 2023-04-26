@@ -16,15 +16,15 @@ TILE Pole[le][wi][he];     // под пирамиду
 int CON_TILES = 144;
 const int tileW = 45, tileH = 55;
 vector <pair<int, int>> layout;
-vector <pair<int, int>> clickXY;
+vector<TILE> avl_tile;
 auto rd = random_device {}; // для рандомизации раскладки
 auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
-int begOfY = floor((height - (tileH * wi)) / 2);
+int begOfY = floor((height - (tileH * wi)) / 2) + 50;
 
 
 TILE library[42];    //библиотка для фишек
-vector<TILE> tiles;
+
 void new_game(){
    init_menu_pole();
    
@@ -67,9 +67,7 @@ void new_game(){
             }
          
          }
-            //debug();// печать
-            
-            printf("\n//==============заполнение маджонга фишками\n");
+
       for(int k = 0; k < he; k++)
          for(int j = 0; j < wi; j++)
             for(int i = 0; i < le; i++)
@@ -106,24 +104,10 @@ void new_game(){
                      break;
                   }
                   layout.erase(layout.begin());
-                  
-                  cout << Pole[i][j][k].access << endl;
                   if (Pole[i][j][k].bmp == 0)        { printf("Нет картинки %d %s\n",CON_TILES, Pole[i][j][k].name);   exit(1);}
                   
-                  tiles.push_back(Pole[i][j][k]);
                } 
             }
-            
-            /*
-            //всякие дебаги
-            //debug();
-            
-            if(layout.size() == 0) printf("YYYEEEEAH");
-            else {
-               printf(":(\n");
-               for(int i = 0; i < layout.size(); i++)       {  printf("%d: %d    2: %d\n", i+1, layout[i].first, layout[i].second);}
-            }   
-            */
    }
    
 void draw_pole(){
@@ -147,14 +131,10 @@ void init_game(){
         
         
    for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }
-   cout << layout.size() <<endl;
 
 
    shuffle(layout.begin(), layout.end(), rng);        //перемешивание
-      
-   //  откладка
-   //for(int i = 0; i < layout.size(); i++)       { printf("%d: 1 - %d    2 - %d\n", i+1, layout[i].first, layout[i].second); }
-
+   
    maj_init();
    }
 
@@ -170,34 +150,24 @@ void core_game()
    
    while(1)
    {
-      for (int i = 0; i < 2; i++)
-      {
-         click();
-         printf("%d %d\n", clickXY[i].first, clickXY[i].second);
-      }
-      printf("\n");
-      
-      i1 = clickXY[0].first;       i2 = clickXY[1].first;          j1 = clickXY[0].second;         j2 = clickXY[1].second;
+      acc_avl();
+      click(&i1, &j1);       click(&i2, &j2);
       
       for (int k = he - 1; k >= 0; k--) {
          if(Pole[i1][j1][k].id == -1)      continue;
-         else{printf("\n%d", Pole[i1][j1][k].id);  k1 = k; break;}
+         else{k1 = k; break;}
          }
          
       for (int k = he - 1; k >= 0; k--)  {
          if(Pole[i2][j2][k].id == -1)      continue;
-         else{printf("\n%d", Pole[i2][j2][k].id);  k2 = k; break;}
+         else{k2 = k; break;}
          }
       
-      if (i1 == i2 && j1 == j2 && k1 == k2)    {clickXY.clear();        continue;}      //если одна и та же фишка
-         
-      // реализация границ определения ??????????
-      
+      if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
       
-      clickXY.clear();
    }
 }   
 
@@ -211,7 +181,7 @@ void delete_pair(TILE *tile1, TILE *tile2)  //смещение
       draw_pole();
 }
 
-bool is_season(TILE tile1, TILE tile2)  //всё гуд но нужно протестить
+bool is_season(TILE tile1, TILE tile2)
 {
    if(tile1.id >= 34 && tile2.id >= 34)  
       return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
@@ -221,37 +191,33 @@ void gain_access(TILE *tile1)
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    
-   //Pole[i][j][k]
    if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
    else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
-
-
 }
    
-void click()
+void click(int *i, int *j)
 {
-   int x, y, i , j;
+   int x, y;
    while(mousebuttons()==1);
+   do{
    while(mousebuttons() != 1){
       x = mousex();
       y = mousey();
    }
-   while(mousebuttons()==1);
-   i = ceil((x - begOfX) / tileW);
-   j = ceil((y - begOfY) / tileH);
-   clickXY.push_back(make_pair(i, j));
+   while(mousebuttons()==1);    
+   }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
+   
+   *i = ceil((x - begOfX) / tileW);
+   *j = ceil((y - begOfY) / tileH);
 }
 
-   void debug()
-   {
-      
-      for(int k = 0; k < he; k++){
-         for(int j = 0; j < wi; j++){
-            for(int i = 0; i < le; i++)
-            {   cout << Pole[i][j][k].access << "       ";   }
-            printf("\n");       
-            }
-            printf("\n\n");
-         }
-            
-   }
+void acc_avl()
+{
+   for(int k = 0; k < he; k++)
+      for(int j = 0; j < wi; j++)
+         for(int i = 0; i < le; i++)
+            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k]);
+   
+   cout << avl_tile.size() / 2 << endl <<endl;
+   avl_tile.clear();
+}

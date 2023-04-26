@@ -12,16 +12,16 @@ FONTS #<menu.h>
 Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
 TILE _type_ #<new_game.h>
 about() -> void #<main.cpp>
+acc_avl() -> void #<new_game.h>
+avl_tile : vector #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
 but : button[] #<menu.cpp>
 button _type_ #<menu.h>
 buttonW : const int #<menu.cpp>
-click() -> void #<new_game.h>
-clickXY : vector #<new_game.cpp>
+click(int* i, int* j) -> void #<new_game.h>
 close_game() -> void #<main.cpp>
 core_game() -> void #<new_game.h>
-debug() -> void #<new_game.h>
 delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
@@ -46,7 +46,6 @@ rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
 rules() -> void #<main.cpp>
 tileW : const int #<new_game.cpp>
-tiles : vector #<new_game.cpp>
 width #<menu.h>
 	TILE::name : char[] #<new_game.h>
 	TILE::id : int #<new_game.h>
