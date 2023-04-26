@@ -67,7 +67,7 @@ void new_game(){
             }
          
          }
-            debug();// печать
+            //debug();// печать
             
             printf("\n//==============заполнение маджонга фишками\n");
       for(int k = 0; k < he; k++)
@@ -77,6 +77,9 @@ void new_game(){
                if (Pole[i][j][k].id == 0)  {       
                   Pole[i][j][k].id = layout[0].first;
                   strcpy(Pole[i][j][k].name, library[layout[0].first].name);
+                  Pole[i][j][k].i = i;
+                  Pole[i][j][k].j = j;
+                  Pole[i][j][k].k = k;
                   Pole[i][j][k].x = begOfX + (i * tileW) + k*2;
                   Pole[i][j][k].y = begOfY + (tileH * j) - k*2;
                   Pole[i][j][k].bmp = library[layout[0].first].bmp;
@@ -102,18 +105,19 @@ void new_game(){
                      else Pole[i][j][k].access = false;
                      break;
                   }
+                  layout.erase(layout.begin());
                   
                   cout << Pole[i][j][k].access << endl;
                   if (Pole[i][j][k].bmp == 0)        { printf("Нет картинки %d %s\n",CON_TILES, Pole[i][j][k].name);   exit(1);}
-                  layout.erase(layout.begin());
+                  
                   tiles.push_back(Pole[i][j][k]);
                } 
             }
             
-            
-            //всякие дебаги
-            debug();
             /*
+            //всякие дебаги
+            //debug();
+            
             if(layout.size() == 0) printf("YYYEEEEAH");
             else {
                printf(":(\n");
@@ -187,9 +191,7 @@ void core_game()
       
       if (i1 == i2 && j1 == j2 && k1 == k2)    {clickXY.clear();        continue;}      //если одна и та же фишка
          
-      //реализовать фишки времен года
       // реализация границ определения ??????????
-      // время, очки
       
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
@@ -202,12 +204,24 @@ void core_game()
 void delete_pair(TILE *tile1, TILE *tile2)  //смещение     
 {
       TILE temp;   temp.id = -1;
+      gain_access(tile1);       gain_access(tile2);
       *(tile1) = temp;
       *(tile2) = temp;
       CON_TILES -= 2;
       draw_pole();
 }
 
-bool is_season(TILE tile1, TILE tile2)  //мб проработать
+bool is_season(TILE tile1, TILE tile2)  //всё гуд но нужно протестить
 {
-   if(tile1.id || _abracadabra_cast(tile2);
+   if(tile1.id >= 34 && tile2.id >= 34)  return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
+}
+
+void gain_access(TILE *tile1)
+{
+   int i = tile1->i, j = tile1->j, k = tile1->k;
+   
+   //Pole[i][j][k]
+   
+   switch(k){
+      case 0:
+         if (_abracadabra_cast(Pole[i + 1][j][k]);

@@ -25,6 +25,7 @@ debug() -> void #<new_game.h>
 delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
+gain_access(TILE* tile1) -> void #<new_game.h>
 height #<menu.h>
 init() -> void #<main.cpp>
 init_game() -> void #<new_game.h>
@@ -52,6 +53,9 @@ width #<menu.h>
 	TILE::count : int #<new_game.h>
 	TILE::x : int #<new_game.h>
 	TILE::y : int #<new_game.h>
+	TILE::i : int #<new_game.h>
+	TILE::j : int #<new_game.h>
+	TILE::k : int #<new_game.h>
 	TILE::access : bool #<new_game.h>
 	TILE::bmp : IMAGE* #<new_game.h>
 	button::x : int #<menu.h>

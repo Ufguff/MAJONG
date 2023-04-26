@@ -4,7 +4,7 @@
 
 typedef struct TILE {
    char name[20];
-   int id, count, x, y;
+   int id, count, x, y, i, j, k;
    bool access;
    IMAGE * bmp;
    }Tile;
@@ -19,6 +19,7 @@ void debug();
 void core_game();
 void click();
 void delete_pair(TILE *tile1, TILE *tile2);
+void gain_access(TILE *tile1);
    
 bool is_season(TILE tile1, TILE tile2);
 #endif

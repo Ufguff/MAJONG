@@ -77,6 +77,9 @@ void new_game(){
                if (Pole[i][j][k].id == 0)  {       
                   Pole[i][j][k].id = layout[0].first;
                   strcpy(Pole[i][j][k].name, library[layout[0].first].name);
+                  Pole[i][j][k].i = i;
+                  Pole[i][j][k].j = j;
+                  Pole[i][j][k].k = k;
                   Pole[i][j][k].x = begOfX + (i * tileW) + k*2;
                   Pole[i][j][k].y = begOfY + (tileH * j) - k*2;
                   Pole[i][j][k].bmp = library[layout[0].first].bmp;
@@ -201,6 +204,7 @@ void core_game()
 void delete_pair(TILE *tile1, TILE *tile2)  //смещение     
 {
       TILE temp;   temp.id = -1;
+      gain_access(tile1);       gain_access(tile2);
       *(tile1) = temp;
       *(tile2) = temp;
       CON_TILES -= 2;
@@ -212,6 +216,16 @@ bool is_season(TILE tile1, TILE tile2)  //всё гуд но нужно протестить
    if(tile1.id >= 34 && tile2.id >= 34)  return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
 }
 
+void gain_access(TILE *tile1)
+{
+   int i = tile1->i, j = tile1->j, k = tile1->k;
+   
+   //Pole[i][j][k]
+   if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
+   else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
+
+
+}
    
 void click()
 {
