@@ -36,7 +36,7 @@ void drawmenu() // отрисовка кнопок и лого
    for(int i=0; i <4; i++){
         putimage(but[i].x , but[i].y, but[i].bmp, COPY_PUT); // imageresize
    }
-   
+   swapbuffers();
 }
 
 

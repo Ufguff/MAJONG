@@ -21,6 +21,7 @@ auto rd = random_device {}; // для рандомизации раскладки
 auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
 int begOfY = floor((height - (tileH * wi)) / 2) + 50;
+int pairAVL;
 
 
 TILE library[42];    //библиотка для фишек
@@ -112,10 +113,18 @@ void new_game(){
    
 void draw_pole(){
    clearviewport();
+   char output[11];
+   sprintf(output, "Фишки: %d", CON_TILES);
+   outtextxy(500, 50, output);
+   acc_avl();
+   sprintf(output, "Ходы: %d", pairAVL);
+   outtextxy(600, 50, output); 
+   
    for(int k = 0; k < he; k++)
          for(int j = 0; j < wi; j++)
             for(int i = 0; i < le; i++)
                  {      if (Pole[i][j][k].id != -1) putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
+   swapbuffers();
    }
 
 
@@ -147,11 +156,11 @@ void init_menu_pole(){
 void core_game()
 {
    int i1, i2, j1, j2, k1, k2;
+   char output[11];
    
    while(1)
    {
-      acc_avl();
-      click(&i1, &j1);       click(&i2, &j2);
+         click(&i1, &j1);       click(&i2, &j2);
       
       for (int k = he - 1; k >= 0; k--) {
          if(Pole[i1][j1][k].id == -1)      continue;
@@ -167,13 +176,12 @@ void core_game()
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
-      
    }
 }   
 
 void delete_pair(TILE *tile1, TILE *tile2)  //смещение     
 {
-      TILE temp;   temp.id = -1;
+      TILE temp;   temp.id = -1;        temp.access = false;
       gain_access(tile1);       gain_access(tile2);
       *(tile1) = temp;
       *(tile2) = temp;
@@ -185,6 +193,7 @@ bool is_season(TILE tile1, TILE tile2)
 {
    if(tile1.id >= 34 && tile2.id >= 34)  
       return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
+   else return false;
 }
 
 void gain_access(TILE *tile1)
@@ -213,21 +222,22 @@ void click(int *i, int *j)
 
 void acc_avl()
 {
-   int count;
+   char output[11];
+   int i = 0;
+   pairAVL = 0;
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k].id);
+            if(Pole[i][j][k].access == true && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
    
-   
-   for(int i = 0; i < avl_tile.size(); i++)
+   sort(begin(avl_tile), end(avl_tile));
+
+   while(i < avl_tile.size())
    {
-      for(int j = i+1; j < avl.size(); j++)
-      {
-         if (avl_tile[i] == avl_tile[j]){       count+=2;       }
+      if (avl_tile[i] == avl_tile[i + 1]){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
+      else      i++;
       }
-   }
+   cout << pairAVL << endl;
    
-   //cout << avl_tile.size() / 2 << endl <<endl;
    avl_tile.clear();
 }

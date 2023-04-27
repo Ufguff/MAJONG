@@ -21,6 +21,7 @@ auto rd = random_device {}; // для рандомизации раскладки
 auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
 int begOfY = floor((height - (tileH * wi)) / 2) + 50;
+int pairAVL = 0;
 
 
 TILE library[42];    //библиотка для фишек
@@ -173,7 +174,7 @@ void core_game()
 
 void delete_pair(TILE *tile1, TILE *tile2)  //смещение     
 {
-      TILE temp;   temp.id = -1;
+      TILE temp;   temp.id = -1;        temp.access = false;
       gain_access(tile1);       gain_access(tile2);
       *(tile1) = temp;
       *(tile2) = temp;
@@ -213,13 +214,18 @@ void click(int *i, int *j)
 
 void acc_avl()
 {
-   int count;
+   int i = 0;
+   pairAVL = 0;
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k].id);
+            if(Pole[i][j][k].access == true && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
    
-   
+   sort(begin(avl_tile), end(avl_tile));
    for(int i = 0; i < avl_tile.size(); i++)
+      cout << avl_tile[i] << " ";
+   cout << endl;
+   
+   while(i < avl_tile.size())
    {
-      for(int j = i+1; j < _abracadabra_cast(avl);
+      if (avl_tile[i] == avl_tile[i + 1]){pairAVL ++;    avl_tile.erase(avl_tile.begin(), _abracadabra_cast(avl_tile);

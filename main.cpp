@@ -5,7 +5,7 @@ void init();
 void rules();
 void about();
 void close_game();
-//пасхалка для git
+
 int main()
 {
    int st = 1;
@@ -24,7 +24,7 @@ int main()
 
 void init()    // инициализация
 {
-   initwindow(width, height, "Majong", 200, 200);
+   initwindow(width, height, "Majong", 200, 200, true);
    setbkcolor(ELVOLT);
    // cleardevice();
    init_menu();
