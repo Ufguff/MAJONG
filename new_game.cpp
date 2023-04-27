@@ -79,8 +79,8 @@ void new_game(){
                   Pole[i][j][k].i = i;
                   Pole[i][j][k].j = j;
                   Pole[i][j][k].k = k;
-                  Pole[i][j][k].x = begOfX + (i * tileW) - k*2;
-                  Pole[i][j][k].y = begOfY + (tileH * j) + k*2;
+                  Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
+                  Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                   Pole[i][j][k].bmp = library[layout[0].first].bmp;
                   switch(k){
                   case 4:
@@ -113,6 +113,7 @@ void new_game(){
    
 void draw_pole(){
    clearviewport();
+   setcolor(WHITE);
    char output[20];
    sprintf(output, "Осталось фишек: %d", CON_TILES);
    outtextxy(400, 50, output);
@@ -218,6 +219,11 @@ void click(int *i, int *j)
    
    *i = ceil((x - begOfX) / tileW);
    *j = ceil((y - begOfY) / tileH);
+   /*
+   setcolor(BLACK);
+   rectangle(begOfX + (*i)*tileW, begOfY + (*j)*tileH, begOfX + (*i+1)*tileW, begOfY + (*j+1)*tileH);
+   swapbuffers();
+   */
 }
 
 void acc_avl()

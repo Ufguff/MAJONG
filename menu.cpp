@@ -19,11 +19,11 @@ void init_menu(){
          but[i].bmp = loadBMP(file);
    }
    logo.dx = 150; logo.dy = 100;
-   logo.x = mid_width / 2; logo.y = 50;
+   logo.x = 60; logo.y = 5;
    ins.dx = 120; ins.dy = 100;
    ins.x = mid_width + mid_width / 2; ins.y = 90;
-   logo.bmp = loadBMP("logo.bmp");
-   ins.bmp = loadBMP("ins.bmp");
+   logo.bmp = loadBMP("menu_majong.gif");
+   //ins.bmp = loadBMP("ins.bmp");
 }
 
 
@@ -31,8 +31,8 @@ void init_menu(){
 void drawmenu() // отрисовка кнопок и лого
 {
    clearviewport();
-   putimage(logo.x, logo.y, logo.bmp, COPY_PUT);
-   putimage(ins.x, ins.y, ins.bmp, COPY_PUT);
+   putimage(logo.x, logo.y, logo.bmp, TRANSPARENT_PUT);
+   //putimage(ins.x, ins.y, ins.bmp, TRANSPARENT_PUT);
    for(int i=0; i <4; i++){
         putimage(but[i].x , but[i].y, but[i].bmp, COPY_PUT); // imageresize
    }
