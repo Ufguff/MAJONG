@@ -79,8 +79,8 @@ void new_game(){
                   Pole[i][j][k].i = i;
                   Pole[i][j][k].j = j;
                   Pole[i][j][k].k = k;
-                  Pole[i][j][k].x = begOfX + (i * tileW) + k*2;
-                  Pole[i][j][k].y = begOfY + (tileH * j) - k*2;
+                  Pole[i][j][k].x = begOfX + (i * tileW) - k*2;
+                  Pole[i][j][k].y = begOfY + (tileH * j) + k*2;
                   Pole[i][j][k].bmp = library[layout[0].first].bmp;
                   switch(k){
                   case 4:
@@ -113,11 +113,11 @@ void new_game(){
    
 void draw_pole(){
    clearviewport();
-   char output[11];
-   sprintf(output, "Фишки: %d", CON_TILES);
-   outtextxy(500, 50, output);
+   char output[20];
+   sprintf(output, "Осталось фишек: %d", CON_TILES);
+   outtextxy(400, 50, output);
    acc_avl();
-   sprintf(output, "Ходы: %d", pairAVL);
+   sprintf(output, "Осталось ходов: %d", pairAVL);
    outtextxy(600, 50, output); 
    
    for(int k = 0; k < he; k++)
