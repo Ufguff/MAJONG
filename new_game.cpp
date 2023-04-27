@@ -16,7 +16,7 @@ TILE Pole[le][wi][he];     // под пирамиду
 int CON_TILES = 144;
 const int tileW = 45, tileH = 55;
 vector <pair<int, int>> layout;
-vector<TILE> avl_tile;
+vector<int> avl_tile;
 auto rd = random_device {}; // для рандомизации раскладки
 auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
@@ -213,11 +213,21 @@ void click(int *i, int *j)
 
 void acc_avl()
 {
+   int count;
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k]);
+            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k].id);
    
-   cout << avl_tile.size() / 2 << endl <<endl;
+   
+   for(int i = 0; i < avl_tile.size(); i++)
+   {
+      for(int j = i+1; j < avl.size(); j++)
+      {
+         if (avl_tile[i] == avl_tile[j]){       count+=2;       }
+      }
+   }
+   
+   //cout << avl_tile.size() / 2 << endl <<endl;
    avl_tile.clear();
 }

@@ -16,7 +16,7 @@ TILE Pole[le][wi][he];     // под пирамиду
 int CON_TILES = 144;
 const int tileW = 45, tileH = 55;
 vector <pair<int, int>> layout;
-vector<TILE> avl_tile;
+vector<int> avl_tile;
 auto rd = random_device {}; // для рандомизации раскладки
 auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
@@ -108,17 +108,6 @@ void new_game(){
                   
                } 
             }
-            
-            /*
-            //всякие дебаги
-            //debug();
-            
-            if(layout.size() == 0) printf("YYYEEEEAH");
-            else {
-               printf(":(\n");
-               for(int i = 0; i < layout.size(); i++)       {  printf("%d: %d    2: %d\n", i+1, layout[i].first, layout[i].second);}
-            }   
-            */
    }
    
 void draw_pole(){
@@ -145,10 +134,7 @@ void init_game(){
 
 
    shuffle(layout.begin(), layout.end(), rng);        //перемешивание
-      
-   //  откладка
-   //for(int i = 0; i < layout.size(); i++)       { printf("%d: 1 - %d    2 - %d\n", i+1, layout[i].first, layout[i].second); }
-
+   
    maj_init();
    }
 
@@ -227,10 +213,13 @@ void click(int *i, int *j)
 
 void acc_avl()
 {
+   int count;
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k]);
+            if(Pole[i][j][k].access == true)      avl_tile.push_back(Pole[i][j][k].id);
    
-   cout << avl_tile.size() / 2 << endl <<endl;
-   _abracadabra_cast(avl_tile);
+   
+   for(int i = 0; i < avl_tile.size(); i++)
+   {
+      for(int j = i+1; j < _abracadabra_cast(avl);
