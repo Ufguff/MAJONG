@@ -161,7 +161,9 @@ void core_game()
    
    while(1)
    {
-         click(&i1, &j1);       click(&i2, &j2);
+      if (pairAVL == 0) mix_at_end();   //проигрыш
+      
+      click(&i1, &j1);       click(&i2, &j2);
       
       for (int k = he - 1; k >= 0; k--) {
          if(Pole[i1][j1][k].id == -1)      continue;
@@ -177,6 +179,7 @@ void core_game()
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
+      
    }
 }   
 
@@ -216,10 +219,10 @@ void click(int *i, int *j)
    }
    while(mousebuttons()==1);    
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
-   
+   if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
    *j = ceil((y - begOfY) / tileH);
-   /*
+   /*                   с свапом разобраться
    setcolor(BLACK);
    rectangle(begOfX + (*i)*tileW, begOfY + (*j)*tileH, begOfX + (*i+1)*tileW, begOfY + (*j+1)*tileH);
    swapbuffers();
@@ -246,4 +249,24 @@ void acc_avl()
    cout << pairAVL << endl;
    
    avl_tile.clear();
+}
+
+void mix_at_end()
+{
+   TILE temp;
+   temp.id = 0;
+   vector <TILE> curTiles;
+   for(int k = 0; k < he; k++)
+      for(int j = 0; j < wi; j++)
+         for(int i = 0; i < le; i++)
+            if(Pole[i][j][k].id != -1)     {curTiles.push_back(Pole[i][j][k]);     Pole[i][j][k] = temp;}
+            
+    shuffle(curTiles.begin(), curTiles.end(), rng);
+
+   for(int k = 0; k < he; k++)
+      for(int j = 0; j < wi; j++)
+         for(int i = 0; i < le; i++)
+            if(Pole[i][j][k].id == 0)   {Pole[i][j][k] = curTiles[0];   curTiles.erase(curTiles.begin());}
+            
+   draw_pole();
 }

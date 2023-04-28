@@ -41,6 +41,7 @@ logo : button #<menu.cpp>
 main() -> int #<main.cpp>
 maj_init() -> void #<new_game.h>
 menu(int st) -> int #<menu.h>
+mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
 rd : auto #<new_game.cpp>
