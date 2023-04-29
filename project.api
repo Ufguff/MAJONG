@@ -13,7 +13,9 @@ Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
 TILE _type_ #<new_game.h>
 about() -> void #<main.cpp>
 acc_avl() -> void #<new_game.h>
+at_end : button[] #<new_game.cpp>
 avl_tile : vector #<new_game.cpp>
+back : button #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
 but : button[] #<menu.cpp>
@@ -41,6 +43,7 @@ logo : button #<menu.cpp>
 main() -> int #<main.cpp>
 maj_init() -> void #<new_game.h>
 menu(int st) -> int #<menu.h>
+mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
 rd : auto #<new_game.cpp>
