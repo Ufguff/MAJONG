@@ -13,7 +13,9 @@ Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
 TILE _type_ #<new_game.h>
 about() -> void #<main.cpp>
 acc_avl() -> void #<new_game.h>
+at_end : button[] #<new_game.cpp>
 avl_tile : vector #<new_game.cpp>
+back : button #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
 but : button[] #<menu.cpp>

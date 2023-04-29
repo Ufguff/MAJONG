@@ -22,7 +22,8 @@ auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
 int begOfY = floor((height - (tileH * wi)) / 2) + 50;
 int pairAVL;
-
+button= loadBMP("back.bmp");
+button at_end[2];
 
 TILE library[42];    //библиотка для фишек
 
@@ -131,6 +132,7 @@ void draw_pole(){
 
 void init_game(){
    // создание маджонга
+   back.x = 100;        back.y = 100;   back.bmp = loadBMP("back.bmp");
    for (int i = 0; i < 42; i++) { // создание пар
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
@@ -161,101 +163,5 @@ void core_game()
    
    while(1)
    {
-      if (pairAVL == 0) mix_at_end();   //проигрыш
-      
-      click(&i1, &j1);       click(&i2, &j2);
-      
-      for (int k = he - 1; k >= 0; k--) {
-         if(Pole[i1][j1][k].id == -1)      continue;
-         else{k1 = k; break;}
-         }
-         
-      for (int k = he - 1; k >= 0; k--)  {
-         if(Pole[i2][j2][k].id == -1)      continue;
-         else{k2 = k; break;}
-         }
-      
-      if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
-      
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
-         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
-   }
-}   
-
-void delete_pair(TILE *tile1, TILE *tile2)  //смещение     
-{
-      TILE temp;   temp.id = -1;        temp.access = false;
-      gain_access(tile1);       gain_access(tile2);
-      *(tile1) = temp;
-      *(tile2) = temp;
-      CON_TILES -= 2;
-      draw_pole();
-}
-
-bool is_season(TILE tile1, TILE tile2)
-{
-   if(tile1.id >= 34 && tile2.id >= 34)  
-      return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
-   else return false;
-}
-
-void gain_access(TILE *tile1)
-{
-   int i = tile1->i, j = tile1->j, k = tile1->k;
-   
-   if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
-   else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
-}
-   
-void click(int *i, int *j)
-{
-   int x, y;
-   while(mousebuttons()==1);
-   do{
-   while(mousebuttons() != 1){
-      x = mousex();
-      y = mousey();
-   }
-   while(mousebuttons()==1);    
-   }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
-   if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
-   *i = ceil((x - begOfX) / tileW);
-   *j = ceil((y - begOfY) / tileH);
-   /*                   с свапом разобраться
-   setcolor(BLACK);
-   rectangle(begOfX + (*i)*tileW, begOfY + (*j)*tileH, begOfX + (*i+1)*tileW, begOfY + (*j+1)*tileH);
-   swapbuffers();
-   */
-}
-
-void acc_avl()
-{
-   char output[11];
-   int i = 0;
-   pairAVL = 0;
-   for(int k = 0; k < he; k++)
-      for(int j = 0; j < wi; j++)
-         for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
-   
-   sort(begin(avl_tile), end(avl_tile));
-
-   while(i < avl_tile.size())
-   {
-      if (avl_tile[i] == avl_tile[i + 1]){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
-      else      i++;
-      }
-   cout << pairAVL << endl;
-   
-   avl_tile.clear();
-}
-
-void mix_at_end()
-{
-   TILE temp;
-   temp.id = 0;
-   vector <TILE> curTiles;
-   for(int k = 0; k < he; k++)
-      for(int j = 0; j < wi; j++)
-         for(int i = 0; i < le; i++)
-            if(_abracadabra_cast(Pole[i][j][k]);
+      if (pairAVL == 0){
+         putimage(_abracadabra_cast(back);
