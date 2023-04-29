@@ -17,5 +17,10 @@ typedef struct button {
 void init_menu();
 int menu(int st);
 void drawmenu();
-
+void begin();
+void init();
+void rules();
+void about();
+void close_game();
+   
 #endif

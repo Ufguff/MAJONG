@@ -1,6 +1,6 @@
 # menu.h new_game.h
 !main.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
-!menu.cpp graphics.h keys_n_colors.h menu.h #<#>
+!menu.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.h graphics.h keys_n_colors.h #<#>
 !new_game.cpp algorithm cctype cerrno clocale cmath cstdint cstdio cstdlib ctype.h cwchar cwctype errno.h exception graphics.h initializer_list ios iosfwd iostream istream keys_n_colors.h limits limits.h locale.h math.h menu.h new new_game.h numeric ostream random signal.h stddef.h stdexcept stdint.h stdio.h stdlib.h streambuf string string_view system_error type_traits typeinfo utility vector wchar.h wctype.h #<#>
  struct@TILE _type_ #<new_game.h>
@@ -11,27 +11,26 @@ ELVOLT #<menu.h>
 FONTS #<menu.h>
 Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
 TILE _type_ #<new_game.h>
-about() -> void #<main.cpp>
+about() -> void #<menu.h>
 acc_avl() -> void #<new_game.h>
-at_end : button[] #<new_game.cpp>
 avl_tile : vector #<new_game.cpp>
-back : button #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
+begin : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;void #<menu.cpp>
+begin() -> void #<menu.h>
 but : button[] #<menu.cpp>
 button _type_ #<menu.h>
 buttonW : const int #<menu.cpp>
 click(int* i, int* j) -> void #<new_game.h>
-close_game() -> void #<main.cpp>
+close_game() -> void #<menu.h>
 core_game() -> void #<new_game.h>
 delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
 gain_access(TILE* tile1) -> void #<new_game.h>
 height #<menu.h>
-init() -> void #<main.cpp>
+init() -> void #<menu.h>
 init_game() -> void #<new_game.h>
-init_menu : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;void #<menu.cpp>
 init_menu() -> void #<menu.h>
 init_menu_pole() -> void #<new_game.h>
 ins : button #<menu.cpp>
@@ -40,17 +39,20 @@ layout : const inttileH=55;vector #<new_game.cpp>
 le : const int #<new_game.cpp>
 library : TILE[] #<new_game.cpp>
 logo : button #<menu.cpp>
+lose : button #<new_game.cpp>
 main() -> int #<main.cpp>
 maj_init() -> void #<new_game.h>
 menu(int st) -> int #<menu.h>
 mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
+prep() -> void #<new_game.cpp>
 rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
-rules() -> void #<main.cpp>
+rules() -> void #<menu.h>
 tileW : const int #<new_game.cpp>
 width #<menu.h>
+win : button #<new_game.cpp>
 	TILE::name : char[] #<new_game.h>
 	TILE::id : int #<new_game.h>
 	TILE::count : int #<new_game.h>
