@@ -161,6 +161,23 @@ void core_game()        // основной процесс игры
    int i1, i2, j1, j2, k1, k2;
    while(1)
    {
+      click(&i1, &j1);       click(&i2, &j2);
+      
+      for (int k = he - 1; k >= 0; k--) {
+         if(Pole[i1][j1][k].id == -1)      continue;
+         else{k1 = k; break;}
+         }
+         
+      for (int k = he - 1; k >= 0; k--)  {
+         if(Pole[i2][j2][k].id == -1)      continue;
+         else{k2 = k; break;}
+         }
+      
+      if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
+      
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
+         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
+      
       if (CON_TILES == 0)
       {
          clearviewport();
@@ -178,22 +195,6 @@ void core_game()        // основной процесс игры
          mix_at_end();
       }
       
-      click(&i1, &j1);       click(&i2, &j2);
-      
-      for (int k = he - 1; k >= 0; k--) {
-         if(Pole[i1][j1][k].id == -1)      continue;
-         else{k1 = k; break;}
-         }
-         
-      for (int k = he - 1; k >= 0; k--)  {
-         if(Pole[i2][j2][k].id == -1)      continue;
-         else{k2 = k; break;}
-         }
-      
-      if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
-      
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
-         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
       draw_pole();
       //похоже когда пар не осталось, программа вылетает
       
@@ -276,7 +277,8 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
          for(int i = 0; i < le; i++)
             if(Pole[i][j][k].id != -1)     {curTiles.push_back(Pole[i][j][k]);     Pole[i][j][k].id = 0;}
              
-    shuffle(curTiles.begin(), curTiles.end(), rng);
+    
+   shuffle(curTiles.begin(), curTiles.end(), rng);
 
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
