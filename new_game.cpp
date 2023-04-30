@@ -195,6 +195,8 @@ void core_game()        // основной процесс игры
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
       draw_pole();
+      //похоже когда пар не осталось, программа вылетает
+      
    }
 }   
 
@@ -279,7 +281,7 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].id == 0)   {Pole[i][j][k] = curTiles[0];   curTiles.erase(curTiles.begin());}
+            if(Pole[i][j][k].id == 0)   {Pole[i][j][k] = curTiles[0];   gain_access(&Pole[i][j][k]);   curTiles.erase(curTiles.begin());}
    
    draw_pole();
 }
