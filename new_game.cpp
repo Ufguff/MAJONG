@@ -159,6 +159,7 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
+   int count = 0;
    while(1)
    {
       click(&i1, &j1);       click(&i2, &j2);
@@ -175,25 +176,15 @@ void core_game()        // основной процесс игры
       
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false){     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
+         acc_avl();
+      }
+      if (count == 0)   pairAVL = 0;
+      count++;
       
-      if (CON_TILES == 0)
-      {
-         clearviewport();
-         putimage(100, 100, win.bmp, COPY_PUT);
-         swapbuffers();
-         getch();
-         clearviewport();
-         begin();
-      }
-      else if (pairAVL == 0){
-         clearviewport();
-         putimage(100, 100, lose.bmp, COPY_PUT);
-         swapbuffers();
-         getch();       //здесь
-         mix_at_end();
-      }
+      if (CON_TILES == 0)       restart();
+      else if (pairAVL == 0)    end();
       
       draw_pole();
       //похоже когда пар не осталось, программа вылетает
@@ -221,8 +212,12 @@ void gain_access(TILE *tile1)   //обновление доступности фишки
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    
+   
    if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
    else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
+   else if (Pole[i][j][k+1].id == -1 && (k+1) < 5) Pole[i][j][k-1].access = true;
+
+   
 }
    
 void click(int *i, int *j)      //клик
@@ -283,7 +278,28 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].id == 0)   {Pole[i][j][k] = curTiles[0];   gain_access(&Pole[i][j][k]);   curTiles.erase(curTiles.begin());}
+            if(Pole[i][j][k].id == 0)   {Pole[i][j][k] = curTiles[0];   Pole[i][j][k].access = false;   gain_access(&Pole[i][j][k]);   curTiles.erase(curTiles.begin());}
    
+   
+            
    draw_pole();
+}
+
+void end()
+{
+   clearviewport();
+   putimage(100, 100, lose.bmp, COPY_PUT);
+   swapbuffers();
+   getch();       //здесь
+   mix_at_end();
+}
+
+void restart()
+{
+  clearviewport();
+   putimage(100, 100, win.bmp, COPY_PUT);
+   swapbuffers();
+   getch();
+   clearviewport();
+   begin(); 
 }

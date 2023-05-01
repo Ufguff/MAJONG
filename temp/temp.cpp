@@ -161,23 +161,6 @@ void core_game()        // основной процесс игры
    int i1, i2, j1, j2, k1, k2;
    while(1)
    {
-      if (CON_TILES == 0)
-      {
-         clearviewport();
-         putimage(100, 100, win.bmp, COPY_PUT);
-         swapbuffers();
-         getch();
-         clearviewport();
-         begin();
-      }
-      else if (pairAVL == 0){
-         clearviewport();
-         putimage(100, 100, lose.bmp, COPY_PUT);
-         swapbuffers();
-         getch();       //здесь
-         mix_at_end();
-      }
-      
       click(&i1, &j1);       click(&i2, &j2);
       
       for (int k = he - 1; k >= 0; k--) {
@@ -192,8 +175,14 @@ void core_game()        // основной процесс игры
       
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false)     //удаление
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false){     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
+         acc_avl();
+      }
+      
+      if (CON_TILES == 0)       restart();
+      else if (pairAVL == 0)    end();
+      
       draw_pole();
       //похоже когда пар не осталось, программа вылетает
       
@@ -220,38 +209,7 @@ void gain_access(TILE *tile1)   //обновление доступности фишки
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    
+   
    if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
    else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
-}
-   
-void click(int *i, int *j)      //клик
-{
-   int x, y;
-   while(mousebuttons()==1);
-   do{
-   while(mousebuttons() != 1){
-      x = mousex();
-      y = mousey();
-   }
-   while(mousebuttons()==1);    
-   }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
-   if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
-   *i = ceil((x - begOfX) / tileW);
-   *j = ceil((y - begOfY) / tileH);
-   /*                   с свапом разобраться
-   setcolor(BLACK);
-   rectangle(begOfX + (*i)*tileW, begOfY + (*j)*tileH, begOfX + (*i+1)*tileW, begOfY + (*j+1)*tileH);
-   swapbuffers();
-   */
-}
-
-void acc_avl()  //пересчет доступных пар фишек
-{
-   char output[11];
-   int i = 0;
-   pairAVL = 0;
-   for(int k = 0; k < he; k++)
-      for(int j = 0; j < wi; j++)
-         for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
-   if (_abracadabra_cast(avl_tile);
+   else if (Pole[i][j][k+1].id == -1 && (k+1) < 5) _abracadabra_cast(Pole[i][j][k-1]);

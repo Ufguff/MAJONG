@@ -22,4 +22,6 @@ void gain_access(TILE *tile1);
 bool is_season(TILE tile1, TILE tile2);
 void acc_avl();
 void mix_at_end();
+void end();
+void restart();
 #endif
