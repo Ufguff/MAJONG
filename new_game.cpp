@@ -14,7 +14,6 @@ using namespace std;
 
 const int le = 9, wi = 7, he = 5;      // размеры пирамиды
 TILE Pole[le][wi][he];     // под пирамиду
-int CON_TILES;
 const int tileW = 45, tileH = 55;
 vector <pair<int, int>> layout;
 vector<int> avl_tile;
@@ -26,13 +25,8 @@ int pairAVL;
 button lose, win;
 TILE library[42];    //библиотка для фишек
 
-void prep()
-{
-   CON_TILES = 144;
-}
-
 void new_game(){
-   prep();
+   int CON_TILES = 144;
    init_menu_pole();
    init_game();
    draw_pole(); 
@@ -134,7 +128,7 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
 
 void init_game(){       // создание маджонга
    lose.bmp = loadBMP(".//MENU_STUFF/lose.bmp");
-   win.bmp = loadBMP("//MENU_STUFF/win.bmp");
+   win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
    for (int i = 0; i < 42; i++) { // создание пар
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
@@ -197,9 +191,9 @@ void core_game()        // основной процесс игры
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
 {
       TILE temp;   temp.id = -1;        temp.access = false;
-      gain_access(tile1);       gain_access(tile2);
       *(tile1) = temp;
       *(tile2) = temp;
+      gain_access(tile1);       gain_access(tile2);
       printf("2");
       CON_TILES -= 2;
 }
@@ -217,7 +211,7 @@ void gain_access(TILE *tile1)   //обновление доступности фишки
    // фишка под не получает доступ
    if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
    else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
-   else if (((Pole[i][j][k - 1].id != -1 ) && ((k-1) >= 0)) && (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)    || (Pole[i + 1][j][k].id != -1 && (i+1) < 9))    Pole[i][j][k-1].access = true;
+   //if ((Pole[i][j][k - 1].id != -1) && ((k-1) >= 0))    Pole[i][j][k-1].access = true;
 
 }
    

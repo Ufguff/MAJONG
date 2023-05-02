@@ -6,7 +6,6 @@
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
-CON_TILES : int #<new_game.cpp>
 ELVOLT #<menu.h>
 FONTS #<menu.h>
 Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
@@ -47,7 +46,6 @@ menu(int st) -> int #<menu.h>
 mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
-prep() -> void #<new_game.cpp>
 rd : auto #<new_game.cpp>
 restart() -> void #<new_game.h>
 rng : auto #<new_game.cpp>
