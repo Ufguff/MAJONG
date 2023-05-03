@@ -6,6 +6,7 @@
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
+CON_TILES : int #<new_game.cpp>
 ELVOLT #<menu.h>
 FONTS #<menu.h>
 Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
@@ -34,7 +35,7 @@ init_game() -> void #<new_game.h>
 init_menu() -> void #<menu.h>
 init_menu_pole() -> void #<new_game.h>
 ins : button #<menu.cpp>
-is_season(TILE tile1, TILE tile2) -> bool #<new_game.h>
+is_season(int tile1, int tile2) -> bool #<new_game.h>
 layout : const inttileH=55;vector #<new_game.cpp>
 le : const int #<new_game.cpp>
 library : TILE[] #<new_game.cpp>

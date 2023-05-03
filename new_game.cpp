@@ -21,12 +21,12 @@ auto rd = random_device {}; // для рандомизации раскладки
 auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
 int begOfY = floor((height - (tileH * wi)) / 2) + 50;
-int pairAVL;
+int pairAVL, CON_TILES;
 button lose, win;
 TILE library[42];    //библиотка для фишек
 
 void new_game(){
-   int CON_TILES = 144;
+   CON_TILES = 144;
    init_menu_pole();
    init_game();
    draw_pole(); 
@@ -40,23 +40,20 @@ void maj_init()
    for(int j = 0; j < wi; j++)
       for(int i = 0; i < le; i++)
       {
+         Pole[i][j][k].id = -1;
          switch(k){
          case 4:
             if((i == 4 && j == 3) || (i == 4 && j == 2))     Pole[i][j][k].id = 0;
-            else     Pole[i][j][k].id = -1;
             break;
          case 3:
             if ((i >= 3 && i <= 5) && (j >= 2 && j <= 4))    Pole[i][j][k].id = 0;
-            else     Pole[i][j][k].id = -1;
             break;
          case 2:
             if ((i >= 2 && i <= 6) && (j >= 1 && j <= 5))    Pole[i][j][k].id = 0;
-            else     Pole[i][j][k].id = -1;
             break;
          case 1:
             if ((i >= 2 && i <= 6))  Pole[i][j][k].id = 0;
             else if ((i == 1) && (j >= 1 && j <= 5) || (i == 7) && (j >= 1 && j <= 5))       Pole[i][j][k].id = 0;
-            else     Pole[i][j][k].id = -1;
             break;
          case 0:
             Pole[i][j][k].id = 0;   // 2            10
@@ -78,26 +75,23 @@ void maj_init()
                Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
+               Pole[i][j][k].access = false;
                switch(k){
                case 4:
                   if ((i == 4 && j == 3) || (i == 4 && j == 2)) Pole[i][j][k].access = true;
                   break;
                case 3:
                   if ((i == 3 || i == 5))    Pole[i][j][k].access = true;
-                  else Pole[i][j][k].access = false;
                   break;
                case 2:
                   if ((i == 2 || i == 6))    Pole[i][j][k].access = true;
-                  else Pole[i][j][k].access = false;
                   break;
                case 1:
                   if (i == 1 || i == 7)      Pole[i][j][k].access = true;
                   else if((i == 2 || i == 6) && (j == 0 || j == 6))  Pole[i][j][k].access = true;
-                  else Pole[i][j][k].access = false;
                   break;
                case 0:
                   if (i == 0 || i == 8)    Pole[i][j][k].access = true;
-                  else Pole[i][j][k].access = false;
                   break;
                }
                layout.erase(layout.begin()); 
@@ -171,19 +165,28 @@ void core_game()        // основной процесс игры
       
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1], Pole[i2][j2][k2])) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false){     //удаление
-         printf("1");
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false){     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
      if(count == 0)     pairAVL = 0;
    count++;
       
+       for(int k = 0; k < he; k++){
+         for(int j = 0; j < wi; j++){
+            for(int i = 0; i < le; i++)
+             {
+                printf("%3d ",Pole[i][j][k].access); 
+             }
+             printf("\n");
+          }
+          printf("\n");
+       }
+      
       if (CON_TILES == 0)       restart();
       else if (pairAVL == 0)    end();
       
       draw_pole();
-      //похоже когда пар не осталось, программа вылетает
       
    }
 }   
@@ -191,26 +194,26 @@ void core_game()        // основной процесс игры
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
 {
       TILE temp;   temp.id = -1;        temp.access = false;
+      gain_access(tile1);       gain_access(tile2);
       *(tile1) = temp;
       *(tile2) = temp;
-      gain_access(tile1);       gain_access(tile2);
-      printf("2");
+      
       CON_TILES -= 2;
 }
 
-bool is_season(TILE tile1, TILE tile2)  //      проверка сезонная ли фишка
+bool is_season(int tile1, int tile2)  //      проверка сезонная ли фишка
 {
-   if(tile1.id >= 34 && tile2.id >= 34)  
-      return ((tile1.id + 4) == tile2.id || (tile2.id + 4) == tile1.id);
+   if(tile1 >= 34 && tile2 >= 34)  
+      return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);
    else return false;
 }
 
-void gain_access(TILE *tile1)   //обновление доступности фишки
+void gain_access(TILE *tile1)   //обновление доступности фишек
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    // фишка под не получает доступ
-   if (Pole[i + 1][j][k].id != -1 && (i+1) < 9)      Pole[i+1][j][k].access = true;
-   else if (Pole[i - 1][j][k].id != -1 && (i - 1) >= 0)        Pole[i-1][j][k].access = true;
+   if ((i+1) < 9 && Pole[i + 1][j][k].id != -1)      Pole[i+1][j][k].access = true;
+   else if ((i - 1) >= 0 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
    //if ((Pole[i][j][k - 1].id != -1) && ((k-1) >= 0))    Pole[i][j][k-1].access = true;
 
 }
@@ -245,16 +248,13 @@ void acc_avl()  //пересчет доступных пар фишек
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
             if(Pole[i][j][k].access == true && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
-   printf("3");
    sort(begin(avl_tile), end(avl_tile));
-printf("4");
    
-   while(i < avl_tile.size())
+   while((i + 1) < avl_tile.size())
    {
-      if (avl_tile[i] == avl_tile[i + 1] && (i+1) < avl_tile.size() ){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
+      if (avl_tile[i] == avl_tile[i + 1] || is_season(avl_tile[i], avl_tile[i+1])){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
       else      i++;
       }
-   printf("5");
    avl_tile.clear();
 }
 
