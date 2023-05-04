@@ -74,28 +74,6 @@ void maj_init()
                Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
-               /*
-               Pole[i][j][k].access = false;
-               switch(k){
-               case 4:
-                  if ((i == 4 && j == 3) || (i == 4 && j == 2)) Pole[i][j][k].access = true;
-                  break;
-               case 3:
-                  if ((i == 3 || i == 5))    Pole[i][j][k].access = true;
-                  break;
-               case 2:
-                  if ((i == 2 || i == 6))    Pole[i][j][k].access = true;
-                  break;
-               case 1:
-                  if (i == 1 || i == 7)      Pole[i][j][k].access = true;
-                  else if((i == 2 || i == 6) && (j == 0 || j == 6))  Pole[i][j][k].access = true;
-                  break;
-               case 0:
-                  if (i == 0 || i == 8)    Pole[i][j][k].access = true;
-                  break;
-                  
-               }
-               */
                layout.erase(layout.begin()); 
                } 
          }
@@ -169,7 +147,7 @@ void core_game()        // основной процесс игры
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
-    // if(count == 0)     pairAVL = 0;
+     //if(count == 0)     pairAVL = 0;
    //count++;
       
 
@@ -203,13 +181,6 @@ bool is_avalible(TILE* tile1)   //обновление доступности фишек
    // фишка под не получает доступ
    if (((Pole[i][j][k+1].id == -1) && (k + 1) <= he) && ((i+1) < 9 && Pole[i + 1][j][k].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k].id == -1) || i == 0 || i == (le - 1))     return true;
       return false;
-   //
- 
-
-   //else if ((i - 1) >= 0 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
-   
-   //if (((Pole[i][j][k - 1].id != -1) && ((k-1) >= -1)) && (((i+1) < 9 && Pole[i + 1][j][k - 1].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k - 1].id == -1) ) )   Pole[i][j][k-1].access = true;
-
 }
    
 void click(int *i, int *j)      //клик
@@ -270,22 +241,13 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
          for(int i = 0; i < le; i++)
             if(Pole[i][j][k].id == 0)   {
                Pole[i][j][k] = curTiles[0];
+               Pole[i][j][k].i = i;
+               Pole[i][j][k].j = j;
+               Pole[i][j][k].k = k;
                Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                curTiles.erase(curTiles.begin());
                }
-   /*
-     for(int k = he - 1; k >= 0; k--)
-         for(int j = 0; j < wi; j++)
-            for(int i = 0; i < le; i++)
-               {
-                  if(Pole[i][j][k].id != -1){
-                  Pole[i][j][k].access = false;
-                     if (((Pole[i + 1][j][k].id == -1 && (i + 1) < 9) || (Pole[i - 1][j][k].id == -1 && (i - 1) >= 0) && Pole[i][j][k+1].id == -1 && (k+1) <= he) || (i == 0 || i == le - 1))
-                        Pole[i][j][k].access = true;
-                  }
-               }
-               */
    acc_avl();
                
    draw_pole();
@@ -309,15 +271,3 @@ void restart()
    clearviewport();
    begin(); 
 }
-/*
-for(int k = 0; k < he; k++){
-         for(int j = 0; j < wi; j++){
-            for(int i = 0; i < le; i++)
-             {
-                printf("%3d ",Pole[i][j][k].access); 
-             }
-             printf("\n");
-          }
-          printf("\n");
-       }
-*/
