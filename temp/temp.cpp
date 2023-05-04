@@ -11,7 +11,6 @@
 
 
 using namespace std;
-
 const int le = 9, wi = 7, he = 5;      // размеры пирамиды
 TILE Pole[le][wi][he];     // под пирамиду
 const int tileW = 45, tileH = 55;
@@ -75,6 +74,7 @@ void maj_init()
                Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
+               /*
                Pole[i][j][k].access = false;
                switch(k){
                case 4:
@@ -93,7 +93,9 @@ void maj_init()
                case 0:
                   if (i == 0 || i == 8)    Pole[i][j][k].access = true;
                   break;
+                  
                }
+               */
                layout.erase(layout.begin()); 
                } 
          }
@@ -106,7 +108,6 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    char output[20];
    sprintf(output, "Осталось фишек: %d", CON_TILES);
    outtextxy(400, 50, output);
-   
    sprintf(output, "Осталось ходов: %d", pairAVL);
    outtextxy(600, 50, output); 
    for(int k = 0; k < he; k++)
@@ -162,7 +163,82 @@ void core_game()        // основной процесс игры
          if(Pole[i2][j2][k].id == -1)      continue;
          else{k2 = k; break;}
          }
-      
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(_abracadabra_cast(Pole[i1][j1][k1]);
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     //удаление
+         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
+         acc_avl();
+      }
+    // if(count == 0)     pairAVL = 0;
+   //count++;
+      
+
+      
+      if (CON_TILES == 0)       restart();
+      else if (pairAVL == 0)    end();
+      
+      draw_pole();
+      
+   }
+}   
+
+void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
+{
+      TILE temp;   temp.id = -1;
+      *(tile1) = temp;
+      *(tile2) = temp;
+      CON_TILES -= 2;
+}
+
+bool is_season(int tile1, int tile2)  //      проверка сезонная ли фишка
+{
+   if(tile1 >= 34 && tile2 >= 34)  
+      return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);
+   else return false;
+}
+
+bool is_avalible(TILE* tile1)   //обновление доступности фишек
+{
+   int i = tile1->i, j = tile1->j, k = tile1->k;
+   // фишка под не получает доступ
+   if (((i+1) < 9 && Pole[i + 1][j][k].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k].id == -1) || i == 0 || i == (le - 1))     return true;
+      return false;
+   //
+ 
+
+   //else if ((i - 1) >= 0 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
+   
+   //if (((Pole[i][j][k - 1].id != -1) && ((k-1) >= -1)) && (((i+1) < 9 && Pole[i + 1][j][k - 1].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k - 1].id == -1) ) )   Pole[i][j][k-1].access = true;
+
+}
+   
+void click(int *i, int *j)      //клик
+{
+   int x, y;
+   while(mousebuttons()==1);
+   do{
+   while(mousebuttons() != 1){
+      x = mousex();
+      y = mousey();
+   }
+   while(mousebuttons()==1);    
+   }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
+   if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
+   *i = ceil((x - begOfX) / tileW);
+   *j = ceil((y - begOfY) / tileH);
+   /*                   с свапом разобраться
+   setcolor(BLACK);
+   rectangle(begOfX + (*i)*tileW, begOfY + (*j)*tileH, begOfX + (*i+1)*tileW, begOfY + (*j+1)*tileH);
+   swapbuffers();
+   */
+}
+
+void acc_avl()  //пересчет доступных пар фишек
+{
+   char output[11];
+   int i = 0;
+   pairAVL = 0;
+   for(int k = 0; k < he; k++)
+      for(int j = 0; j < wi; j++)
+         for(int i = 0; i < le; i++)
+            if(_abracadabra_cast(Pole[i][j][k]);

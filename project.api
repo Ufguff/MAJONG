@@ -28,13 +28,13 @@ delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
 end() -> void #<new_game.h>
-gain_access(TILE* tile1) -> void #<new_game.h>
 height #<menu.h>
 init() -> void #<menu.h>
 init_game() -> void #<new_game.h>
 init_menu() -> void #<menu.h>
 init_menu_pole() -> void #<new_game.h>
 ins : button #<menu.cpp>
+is_avalible(TILE* tile1) -> bool #<new_game.h>
 is_season(int tile1, int tile2) -> bool #<new_game.h>
 layout : const inttileH=55;vector #<new_game.cpp>
 le : const int #<new_game.cpp>
@@ -62,7 +62,6 @@ win : button #<new_game.cpp>
 	TILE::i : int #<new_game.h>
 	TILE::j : int #<new_game.h>
 	TILE::k : int #<new_game.h>
-	TILE::access : bool #<new_game.h>
 	TILE::bmp : IMAGE* #<new_game.h>
 	button::x : int #<menu.h>
 	button::y : int #<menu.h>

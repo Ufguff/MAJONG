@@ -11,7 +11,6 @@
 #include "graphics.h"
 
 using namespace std;
-
 const int le = 9, wi = 7, he = 5;      // размеры пирамиды
 TILE Pole[le][wi][he];     // под пирамиду
 const int tileW = 45, tileH = 55;
@@ -75,6 +74,7 @@ void maj_init()
                Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
+               /*
                Pole[i][j][k].access = false;
                switch(k){
                case 4:
@@ -93,7 +93,9 @@ void maj_init()
                case 0:
                   if (i == 0 || i == 8)    Pole[i][j][k].access = true;
                   break;
+                  
                }
+               */
                layout.erase(layout.begin()); 
                } 
          }
@@ -106,7 +108,6 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    char output[20];
    sprintf(output, "Осталось фишек: %d", CON_TILES);
    outtextxy(400, 50, output);
-   
    sprintf(output, "Осталось ходов: %d", pairAVL);
    outtextxy(600, 50, output); 
    for(int k = 0; k < he; k++)
@@ -164,23 +165,14 @@ void core_game()        // основной процесс игры
          }
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false){     //удаление
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
     // if(count == 0)     pairAVL = 0;
    //count++;
       
-       for(int k = 0; k < he; k++){
-         for(int j = 0; j < wi; j++){
-            for(int i = 0; i < le; i++)
-             {
-                printf("%3d ",Pole[i][j][k].access); 
-             }
-             printf("\n");
-          }
-          printf("\n");
-       }
+
       
       if (CON_TILES == 0)       restart();
       else if (pairAVL == 0)    end();
@@ -192,11 +184,9 @@ void core_game()        // основной процесс игры
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
 {
-      TILE temp;   temp.id = -1;        temp.access = false;
-      gain_access(tile1);       gain_access(tile2);
+      TILE temp;   temp.id = -1;
       *(tile1) = temp;
       *(tile2) = temp;
-      
       CON_TILES -= 2;
 }
 
@@ -207,14 +197,18 @@ bool is_season(int tile1, int tile2)  //      проверка сезонная ли фишка
    else return false;
 }
 
-void gain_access(TILE *tile1)   //обновление доступности фишек
+bool is_avalible(TILE* tile1)   //обновление доступности фишек
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    // фишка под не получает доступ
-   if ((i+1) <= 9 && Pole[i + 1][j][k].id != -1)      Pole[i+1][j][k].access = true;
-   else if ((i - 1) >= -1 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
+   if (((Pole[i][j][k+1].id == -1) && (k + 1) <= he) && ((i+1) < 9 && Pole[i + 1][j][k].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k].id == -1) || i == 0 || i == (le - 1))     return true;
+      return false;
+   //
+ 
+
+   //else if ((i - 1) >= 0 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
    
-   if (((Pole[i][j][k - 1].id != -1) && ((k-1) >= -1)) && (((i+1) <= 9 && Pole[i + 1][j][k - 1].id == -1) || ((i - 1) >= -1 && Pole[i - 1][j][k - 1].id == -1) ) )   Pole[i][j][k-1].access = true;
+   //if (((Pole[i][j][k - 1].id != -1) && ((k-1) >= -1)) && (((i+1) < 9 && Pole[i + 1][j][k - 1].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k - 1].id == -1) ) )   Pole[i][j][k-1].access = true;
 
 }
    
@@ -247,7 +241,7 @@ void acc_avl()  //пересчет доступных пар фишек
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].access == true && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
+            if(Pole[i][j][k].id != -1 && is_avalible(&Pole[i][j][k]) && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
    sort(begin(avl_tile), end(avl_tile));
    
    while((i + 1) < avl_tile.size())
@@ -280,18 +274,19 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                curTiles.erase(curTiles.begin());
                }
-   
+   /*
      for(int k = he - 1; k >= 0; k--)
          for(int j = 0; j < wi; j++)
             for(int i = 0; i < le; i++)
                {
                   if(Pole[i][j][k].id != -1){
                   Pole[i][j][k].access = false;
-                     if (((Pole[i + 1][j][k].id == -1 && (i + 1) <= 9) || (Pole[i - 1][j][k].id == -1 && (i - 1) >= -1) && Pole[i][j][k+1].id == -1 && (k+1) <= he) || (i == 0 || i == le - 1))
+                     if (((Pole[i + 1][j][k].id == -1 && (i + 1) < 9) || (Pole[i - 1][j][k].id == -1 && (i - 1) >= 0) && Pole[i][j][k+1].id == -1 && (k+1) <= he) || (i == 0 || i == le - 1))
                         Pole[i][j][k].access = true;
                   }
                }
-               acc_avl();
+               */
+   acc_avl();
                
    draw_pole();
 }
