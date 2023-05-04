@@ -6,6 +6,7 @@
 button but[4];
 button logo;
 button ins;
+button rule_about;
 
 const int buttonW = 280, buttonH = 90;  //размеры кнопок меню
 const int mid_width = width / 2, mid_height = height / 2;
@@ -75,8 +76,25 @@ int menu(int st)
    return st;
 }
 
-void rules(){}
+void rules()
+{
+   clearviewport();
+   rule_about.bmp = loadBMP(".//MENU_STUFF/rules.bmp");
+   putimage(0, 0, rule_about.bmp, COPY_PUT);
+   swapbuffers();
+   getch();
+   begin();
+}
 
-void about(){}
+void about()
+{
+   clearviewport();
+   rule_about.bmp = loadBMP(".//MENU_STUFF/about.bmp");
+   putimage(0, 0, rule_about.bmp, COPY_PUT);
+   swapbuffers();
+   getch();
+   begin();   
+   
+}
 
 void close_game(){      closegraph();   }

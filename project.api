@@ -6,6 +6,7 @@
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
+BEIGE #<new_game.h>
 CON_TILES : int #<new_game.cpp>
 ELVOLT #<menu.h>
 FONTS #<menu.h>
@@ -18,6 +19,7 @@ begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
 begin : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;void #<menu.cpp>
 begin() -> void #<menu.h>
+border(TILE* tile) -> void #<new_game.h>
 but : button[] #<menu.cpp>
 button _type_ #<menu.h>
 buttonW : const int #<menu.cpp>
@@ -50,6 +52,7 @@ pairAVL : int #<new_game.cpp>
 rd : auto #<new_game.cpp>
 restart() -> void #<new_game.h>
 rng : auto #<new_game.cpp>
+rule_about : button #<menu.cpp>
 rules() -> void #<menu.h>
 tileW : const int #<new_game.cpp>
 width #<menu.h>

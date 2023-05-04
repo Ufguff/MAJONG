@@ -84,6 +84,7 @@ void maj_init()
 void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
    clearviewport();
    char output[20];
+   setcolor(BEIGE);
    sprintf(output, "Осталось фишек: %d", CON_TILES);
    outtextxy(400, 50, output);
    sprintf(output, "Осталось ходов: %d", pairAVL);
@@ -130,30 +131,30 @@ void core_game()        // основной процесс игры
    int count = 0;
    while(1)
    {
-      click(&i1, &j1);       click(&i2, &j2);
+      if (CON_TILES == 0)       restart();
+      else if (pairAVL == 0)    end();
       
+      click(&i1, &j1);
       for (int k = he - 1; k >= 0; k--) {
          if(Pole[i1][j1][k].id == -1)      continue;
          else{k1 = k; break;}
          }
+      //border(&Pole[i1][j1][k1]);
          
+      click(&i2, &j2);
       for (int k = he - 1; k >= 0; k--)  {
          if(Pole[i2][j2][k].id == -1)      continue;
          else{k2 = k; break;}
          }
+      //border(&Pole[i2][j2][k2]);
+          
+         
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
-     //if(count == 0)     pairAVL = 0;
-   //count++;
-      
-
-      
-      if (CON_TILES == 0)       restart();
-      else if (pairAVL == 0)    end();
       
       draw_pole();
       
@@ -197,11 +198,7 @@ void click(int *i, int *j)      //клик
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
    *j = ceil((y - begOfY) / tileH);
-   /*                   с свапом разобраться
-   setcolor(BLACK);
-   rectangle(begOfX + (*i)*tileW, begOfY + (*j)*tileH, begOfX + (*i+1)*tileW, begOfY + (*j+1)*tileH);
-   swapbuffers();
-   */
+   
 }
 
 void acc_avl()  //пересчет доступных пар фишек
@@ -253,12 +250,22 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
    draw_pole();
 }
 
+void border(TILE *tile) // доделать
+{
+   setcolor(WHITE);
+   rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
+   swapbuffers();
+}
+
 void end()
 {
+   button ex, res;
+   ex.bmp = loadBMP("");
+   res.bmp = loadBMP("");
    clearviewport();
    putimage(100, 100, lose.bmp, COPY_PUT);
    swapbuffers();
-   getch();       //здесь
+   getch();       
    mix_at_end();
 }
 
