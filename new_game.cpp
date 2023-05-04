@@ -162,15 +162,14 @@ void core_game()        // основной процесс игры
          if(Pole[i2][j2][k].id == -1)      continue;
          else{k2 = k; break;}
          }
-      
       if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
       
       if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && Pole[i1][j1][k1].access != false && Pole[i2][j2][k2].access != false){     //удаление
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
-     if(count == 0)     pairAVL = 0;
-   count++;
+    // if(count == 0)     pairAVL = 0;
+   //count++;
       
        for(int k = 0; k < he; k++){
          for(int j = 0; j < wi; j++){
@@ -212,9 +211,10 @@ void gain_access(TILE *tile1)   //обновление доступности фишек
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    // фишка под не получает доступ
-   if ((i+1) < 9 && Pole[i + 1][j][k].id != -1)      Pole[i+1][j][k].access = true;
-   else if ((i - 1) >= 0 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
-   //if ((Pole[i][j][k - 1].id != -1) && ((k-1) >= 0))    Pole[i][j][k-1].access = true;
+   if ((i+1) <= 9 && Pole[i + 1][j][k].id != -1)      Pole[i+1][j][k].access = true;
+   else if ((i - 1) >= -1 && Pole[i - 1][j][k].id != -1)        Pole[i-1][j][k].access = true;
+   
+   if (((Pole[i][j][k - 1].id != -1) && ((k-1) >= -1)) && (((i+1) <= 9 && Pole[i + 1][j][k - 1].id == -1) || ((i - 1) >= -1 && Pole[i - 1][j][k - 1].id == -1) ) )   Pole[i][j][k-1].access = true;
 
 }
    
@@ -286,24 +286,13 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
             for(int i = 0; i < le; i++)
                {
                   if(Pole[i][j][k].id != -1){
-                  if (((Pole[i + 1][j][k].id == -1 && (i + 1) <= 9) || (Pole[i - 1][j][k].id == -1 && (i - 1) >= -1) && Pole[i][j][k+1].id == -1 && (k+1) <= he) || (i == 0 || i == le - 1))
-                     Pole[i][j][k].access = true;
-                     //
-                  else Pole[i][j][k].access = false;
+                  Pole[i][j][k].access = false;
+                     if (((Pole[i + 1][j][k].id == -1 && (i + 1) <= 9) || (Pole[i - 1][j][k].id == -1 && (i - 1) >= -1) && Pole[i][j][k+1].id == -1 && (k+1) <= he) || (i == 0 || i == le - 1))
+                        Pole[i][j][k].access = true;
                   }
                }
                acc_avl();
                
-      for(int k = 0; k < he; k++){
-         for(int j = 0; j < wi; j++){
-            for(int i = 0; i < le; i++)
-             {
-                printf("%3d ",Pole[i][j][k].access); 
-             }
-             printf("\n");
-          }
-          printf("\n");
-       }
    draw_pole();
 }
 
@@ -325,3 +314,15 @@ void restart()
    clearviewport();
    begin(); 
 }
+/*
+for(int k = 0; k < he; k++){
+         for(int j = 0; j < wi; j++){
+            for(int i = 0; i < le; i++)
+             {
+                printf("%3d ",Pole[i][j][k].access); 
+             }
+             printf("\n");
+          }
+          printf("\n");
+       }
+*/
