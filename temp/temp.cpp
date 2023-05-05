@@ -155,6 +155,7 @@ void core_game()        // основной процесс игры
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
+      pairAVL = 0;
       
       draw_pole();
       
@@ -259,5 +260,14 @@ void border(TILE *tile) // доделать
 
 void end()
 {
-   button ex, res;
-   _abracadabra_cast(ex);
+   button but[3];
+   char s[25];
+   clearviewport();
+
+   for(int i = 0; i < 3; i++)
+   {
+      sprintf(s, "MENU_STUFF/exit%d.bmp", i);
+      if(i != 0)
+      {
+         but[i].dx = 90;        but[i].dy = 45;
+         but[i].x = 120 + i*180,;       _abracadabra_cast(but[i]);

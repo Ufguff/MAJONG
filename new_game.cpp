@@ -128,7 +128,6 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
-   int count = 0;
    while(1)
    {
       if (CON_TILES == 0)       restart();
@@ -259,14 +258,41 @@ void border(TILE *tile) // доделать
 
 void end()
 {
-   button ex, res;
-   ex.bmp = loadBMP("");
-   res.bmp = loadBMP("");
+   button but[3];
+   char s[25];
    clearviewport();
-   putimage(100, 100, lose.bmp, COPY_PUT);
+
+   for(int i = 0; i < 3; i++)
+   {
+      sprintf(s, "MENU_STUFF/exit%d.bmp", i);
+      if(i != 0)
+      {
+         but[i].dx = 90;        but[i].dy = 45;
+         but[i].x = 120 + i*180;       but[i].y = 450;
+      }
+      but[i].bmp = loadBMP(s);
+   }
+   for(int i = 0; i < 3; i++)
+   {
+      if (i == 0)       putimage(100, 100, but[i].bmp, COPY_PUT);
+      else putimage(but[i].x, but[i].y, but[i].bmp, COPY_PUT);
+   }
+   
    swapbuffers();
-   getch();       
-   mix_at_end();
+   
+   int flag = 0, x, y, st = 0;       // надо бы отдельно запихнуть
+   do {
+      while(mousebuttons() != 1){
+         x = mousex();
+         y = mousey();}
+         for(int i = 1; i < 3; i++){
+            if (x >= but[i].x && x <= but[i].x + but[i].dx && y >= but[i].y && y <= but[i].y + but[i].dy)
+            {flag = 1; st = i+1;  break; }
+            }
+   }while(!flag);
+   
+   if(st == 2)  mix_at_end();
+   else begin();
 }
 
 void restart()
