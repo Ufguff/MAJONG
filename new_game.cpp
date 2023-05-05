@@ -154,7 +154,7 @@ void core_game()        // основной процесс игры
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
          acc_avl();
       }
-      
+      pairAVL = 0;
       draw_pole();
       
    }
@@ -267,14 +267,14 @@ void end()
       sprintf(s, "MENU_STUFF/exit%d.bmp", i);
       if(i != 0)
       {
-         but[i].dx = 90;        but[i].dy = 45;
-         but[i].x = 120 + i*180;       but[i].y = 450;
+         but[i].dx = 280;        but[i].dy = 90;
+         but[i].x = 100 + but[i].dx*(i - 1);       but[i].y = 450;
       }
       but[i].bmp = loadBMP(s);
    }
    for(int i = 0; i < 3; i++)
    {
-      if (i == 0)       putimage(100, 100, but[i].bmp, COPY_PUT);
+      if (i == 0)       putimage(0, 0, but[i].bmp, COPY_PUT);
       else putimage(but[i].x, but[i].y, but[i].bmp, COPY_PUT);
    }
    
@@ -298,7 +298,7 @@ void end()
 void restart()
 {
   clearviewport();
-   putimage(100, 100, win.bmp, COPY_PUT);
+   putimage(0, 0, win.bmp, COPY_PUT);
    swapbuffers();
    getch();
    clearviewport();

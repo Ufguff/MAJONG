@@ -128,7 +128,6 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
-   int count = 0;
    while(1)
    {
       if (CON_TILES == 0)       restart();
@@ -156,7 +155,6 @@ void core_game()        // основной процесс игры
          acc_avl();
       }
       pairAVL = 0;
-      
       draw_pole();
       
    }
@@ -269,5 +267,5 @@ void end()
       sprintf(s, "MENU_STUFF/exit%d.bmp", i);
       if(i != 0)
       {
-         but[i].dx = 90;        but[i].dy = 45;
-         but[i].x = 120 + i*180,;       _abracadabra_cast(but[i]);
+         but[i].dx = 280;        but[i].dy = 90;
+         but[i].x = 100 + _abracadabra_cast(but[i]);
