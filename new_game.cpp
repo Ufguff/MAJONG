@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <utility>
 #include <string>
-#include<cmath>
+#include <cmath>
+#include <ctime>
+//#include <omp.h>
+#include <thread>
 
 #include "menu.h"
 #include "new_game.h"
@@ -21,11 +24,15 @@ auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
 int begOfY = floor((height - (tileH * wi)) / 2) + 50;
 int pairAVL, CON_TILES;
+int hours = 0, minutes = 0, seconds = 0;        //время прохождения
 button lose, win;
 TILE library[42];    //библиотка для фишек
+thread SW;
+
 
 void new_game(){
    CON_TILES = 144;
+   hours = 0; minutes = 0; seconds = 0;
    init_menu_pole();
    init_game();
    draw_pole(); 
@@ -128,37 +135,39 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
-   while(1)
-   {
-      if (CON_TILES == 0)       restart();
-      else if (pairAVL == 0)    end();
-      
-      click(&i1, &j1);
-      for (int k = he - 1; k >= 0; k--) {
-         if(Pole[i1][j1][k].id == -1)      continue;
-         else{k1 = k; break;}
-         }
-      //border(&Pole[i1][j1][k1]);
+   thread SW(stopwatch);
+      while(1)
+      {
+         //pairAVL = 0;
+         if (CON_TILES == 0)       victory();
+         else if (pairAVL == 0)    end();
          
-      click(&i2, &j2);
-      for (int k = he - 1; k >= 0; k--)  {
-         if(Pole[i2][j2][k].id == -1)      continue;
-         else{k2 = k; break;}
-         }
-      //border(&Pole[i2][j2][k2]);
-          
+         click(&i1, &j1);
+         for (int k = he - 1; k >= 0; k--) {
+            if(Pole[i1][j1][k].id == -1)      continue;
+            else{k1 = k; break;}
+            }
+         //border(&Pole[i1][j1][k1]);
+            
+         click(&i2, &j2);
+         for (int k = he - 1; k >= 0; k--)  {
+            if(Pole[i2][j2][k].id == -1)      continue;
+            else{k2 = k; break;}
+            }
+         //border(&Pole[i2][j2][k2]);
          
-      if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
-      
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     //удаление
-         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
-         acc_avl();
+         if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
+         
+         if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     //удаление
+            delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
+            acc_avl();
+         }
+         
+         
+         draw_pole();
       }
-      pairAVL = 0;
-      draw_pole();
-      
-   }
-}   
+   
+}
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
 {
@@ -256,12 +265,38 @@ void border(TILE *tile) // доделать
    swapbuffers();
 }
 
+void stopwatch()
+{
+   time_t start;
+   struct tm *now;
+   int s1, s0 = 0;
+   start = time(NULL);
+   now = localtime(&start);
+   s0 = now->tm_sec;
+   while(1)
+   {
+      start = time(NULL);
+      now = localtime(&start);
+      s1 = now->tm_sec;
+      if (s1 != s0){
+         s0 = s1;
+         seconds++;
+         printf("Timer - %02d:%02d:%02d\n", hours, minutes, seconds);
+         if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
+         if (seconds == 59){ minutes++;   seconds = -1; }
+         
+      }
+   }
+}
+
 void end()
 {
    button but[3];
    char s[25];
    clearviewport();
-
+   
+   SW.detach();
+   
    for(int i = 0; i < 3; i++)
    {
       sprintf(s, "MENU_STUFF/exit%d.bmp", i);
@@ -295,7 +330,7 @@ void end()
    else begin();
 }
 
-void restart()
+void victory()
 {
   clearviewport();
    putimage(0, 0, win.bmp, COPY_PUT);

@@ -23,6 +23,7 @@ bool is_season(int tile1, int tile2);
 void acc_avl();
 void mix_at_end();
 void border(TILE *tile);
+void stopwatch();
 void end();
-void restart();
+void victory();
 #endif

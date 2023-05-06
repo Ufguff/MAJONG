@@ -6,7 +6,9 @@ int _abracadabra_cast(_abracadabra_type);
 #include <algorithm>
 #include <utility>
 #include <string>
-#include<cmath>
+#include <cmath>
+#include <ctime>
+#include <thread>
 #include "menu.h"
 #include "new_game.h"
 #include "graphics.h"
