@@ -27,7 +27,7 @@ int pairAVL, CON_TILES;
 int hours = 0, minutes = 0, seconds = 0;        //время прохождения
 button lose, win;
 TILE library[42];    //библиотка для фишек
-thread SW;
+jthread SW;
 
 
 void new_game(){
@@ -135,9 +135,10 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
-   thread SW(stopwatch);
+   jthread SW(stopwatch);
       while(1)
       {
+         //pairAVL = 0;
          if (CON_TILES == 0)       victory();
          else if (pairAVL == 0)    end();
          
@@ -162,8 +163,9 @@ void core_game()        // основной процесс игры
             acc_avl();
          }
          
-         CON_TILES = 0;
+         
          draw_pole();
+         pairAVL = 0;
       }
    
 }

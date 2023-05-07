@@ -27,8 +27,8 @@ int pairAVL, CON_TILES;
 int hours = 0, minutes = 0, seconds = 0;        //врем€ прохождени€
 button lose, win;
 TILE library[42];    //библиотка дл€ фишек
-thread SW;
-
+//thread SW;
+bool threadAcc = true;
 
 void new_game(){
    CON_TILES = 144;
@@ -135,10 +135,9 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
-   thread SW(stopwatch);
+   jthread SW(stopwatch);
       while(1)
       {
-         //pairAVL = 0;
          if (CON_TILES == 0)       victory();
          else if (pairAVL == 0)    end();
          
@@ -165,6 +164,7 @@ void core_game()        // основной процесс игры
          
          
          draw_pole();
+         pairAVL = 0;
       }
    
 }
@@ -267,13 +267,14 @@ void border(TILE *tile) // доделать
 
 void stopwatch()
 {
+   cout << "--" << endl;
    time_t start;
    struct tm *now;
    int s1, s0 = 0;
    start = time(NULL);
    now = localtime(&start);
    s0 = now->tm_sec;
-   while(1)
+   while(threadAcc)
    {
       start = time(NULL);
       now = localtime(&start);
@@ -294,8 +295,7 @@ void end()
    button but[3];
    char s[25];
    clearviewport();
-   
-   SW.detach();
+   threadAcc = false;
    
    for(int i = 0; i < 3; i++)
    {
@@ -326,7 +326,7 @@ void end()
             }
    }while(!flag);
    
-   if(st == 2)  mix_at_end();
+   if(st == 2)  {threadAcc = true;   mix_at_end();}
    else begin();
 }
 
