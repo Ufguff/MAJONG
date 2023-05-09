@@ -6,7 +6,6 @@
 #include <string>
 #include <cmath>
 #include <ctime>
-//#include <omp.h>
 #include <thread>
 
 #include "menu.h"
@@ -14,43 +13,45 @@
 #include "graphics.h"
 
 using namespace std;
-const int le = 9, wi = 7, he = 5;      // размеры пирамиды
-TILE Pole[le][wi][he];     // под пирамиду
-const int tileW = 45, tileH = 55;
-vector <pair<int, int>> layout;
-vector<int> avl_tile;
-auto rd = random_device {}; // для рандомизации раскладки
-auto rng = default_random_engine {rd()};
-int begOfX = floor((width - (tileW * le)) / 2);
-int begOfY = floor((height - (tileH * wi)) / 2) + 50;
-int pairAVL, CON_TILES;
-int hours, minutes, seconds;        //время прохождения
-button lose, win;
-TILE library[42];    //библиотка для фишек
-thread SW;
-bool threadAcc;
 
-void new_game(){
+const int le = 9, wi = 7, he = 5;      // размеры массива пирамиды
+TILE Pole[le][wi][he];     // обьявление трехмерного массива
+const int tileW = 45, tileH = 55;       //размеры фишки в пикселях
+vector <pair<int, int>> layout; //раскладка фишек
+vector<int> avl_tile;   //массив доступных фишек для их дальнейшего подсчета
+// для рандомизации раскладки
+auto rd = random_device {}; 
+auto rng = default_random_engine {rd()};
+
+int begOfX = floor((width - (tileW * le)) / 2); //начальная координата по X для вывода всей пирамиды
+int begOfY = floor((height - (tileH * wi)) / 2) + 50;   //начальная координата по Y для вывода всей пирамиды
+int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
+int hours, minutes, seconds;        //время прохождения
+button lose, win;       //окна для вывода проигрыша или выигрыше
+TILE library[42];    //библиотка для фишек
+thread SW;      //обьявление потока для секундомера
+bool threadAcc; //для включение/выключение таймера
+
+void new_game(){        //отрисовка массива и движок игры
    CON_TILES = 144;
    hours = 0; minutes = 0; seconds = 0;
    threadAcc = true;
-   init_menu_pole();
+   
    init_game();
    draw_pole(); 
    core_game();
 }
    
-void maj_init() 
+void maj_init() //предварительное создание поля и его заполнение
 {
-   //============обьявление маджонга
    for(int k = 0; k < he; k++)
    for(int j = 0; j < wi; j++)
       for(int i = 0; i < le; i++)
       {
-         Pole[i][j][k].id = -1;
-         switch(k){
+         Pole[i][j][k].id = -1; //если значение id равно -1 -- эта позиция недоступна
+         switch(k){     //расставление мест где фишка должна быть
          case 4:
-            if((i == 4 && j == 3) || (i == 4 && j == 2))     Pole[i][j][k].id = 0;
+            if((i == 4 && j == 3) || (i == 4 && j == 2))     Pole[i][j][k].id = 0;      //если id равен 0 -- позиция доступна
             break;
          case 3:
             if ((i >= 3 && i <= 5) && (j >= 2 && j <= 4))    Pole[i][j][k].id = 0;
@@ -63,12 +64,12 @@ void maj_init()
             else if ((i == 1) && (j >= 1 && j <= 5) || (i == 7) && (j >= 1 && j <= 5))       Pole[i][j][k].id = 0;
             break;
          case 0:
-            Pole[i][j][k].id = 0;   // 2            10
+            Pole[i][j][k].id = 0;   
             break;
          }
          
       }
-      
+      //присвоение каждой структуре его координаты в массиве, координаты на поле и адрес для размещения картинки
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
@@ -86,18 +87,18 @@ void maj_init()
                } 
          }
          
-         acc_avl();
+         acc_avl();     //пересчет доступных пар фишек
 }
    
 void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
    clearviewport();
    char output[20];
-   setcolor(BEIGE);
+   setcolor(BEIGE);     //установка цвета для текста
    sprintf(output, "Осталось фишек: %d", CON_TILES);
    outtextxy(400, 50, output);
    sprintf(output, "Осталось ходов: %d", pairAVL);
    outtextxy(600, 50, output); 
-   for(int k = 0; k < he; k++)
+   for(int k = 0; k < he; k++)  // выведение картинок фишек
          for(int j = 0; j < wi; j++)
             for(int i = 0; i < le; i++)
                  {      
@@ -108,10 +109,12 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    }
 
 
-void init_game(){       // создание маджонга
+void init_game(){       // инициализация библиотеки и раскладки
+   setbkcolor(AVOCADO); 
+   clearviewport();
    lose.bmp = loadBMP(".//MENU_STUFF/lose.bmp");
    win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
-   for (int i = 0; i < 42; i++) { // создание пар
+   for (int i = 0; i < 42; i++) { // создание библиотеки фишек
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
          else library[i].count = 1; 
@@ -120,36 +123,32 @@ void init_game(){       // создание маджонга
 	}
         
         
-   for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }
+   for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }       //создание раскладки
 
 
-   shuffle(layout.begin(), layout.end(), rng);        //перемешивание
+   shuffle(layout.begin(), layout.end(), rng);        //реализация рандомизации(перемешивание раскладки)
    
    maj_init();
    }
 
-void init_menu_pole(){
-   setbkcolor(AVOCADO); 
-   clearviewport();
-   }
-
 void core_game()        // основной процесс игры
 {
-   int i1, i2, j1, j2, k1, k2;
+   int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
    
-   turn_SW();
+   turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
-         if (CON_TILES == 0)       victory();
+         if (CON_TILES == 0)       victory();   //условия для проигрыша или выигрыша
          else if (pairAVL == 0)    end();
-         
+         //выбор 1 фишки и нахождение её позиции в массиве
          click(&i1, &j1);
          for (int k = he - 1; k >= 0; k--) {
             if(Pole[i1][j1][k].id == -1)      continue;
             else{k1 = k; break;}
             }
          //border(&Pole[i1][j1][k1]);
-            
+         
+         //выбор 2 фишки и нахождение её позиции в массиве            
          click(&i2, &j2);
          for (int k = he - 1; k >= 0; k--)  {
             if(Pole[i2][j2][k].id == -1)      continue;
@@ -157,18 +156,19 @@ void core_game()        // основной процесс игры
             }
          //border(&Pole[i2][j2][k2]);
          
-         if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка
+         if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка то игнорируем
          
-         if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     //удаление
-            delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
-            acc_avl();
+         //если фишки одинаковы
+         if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
+            delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
+            acc_avl(); //пересчет доступных пар фишек
          }
-         draw_pole();
+         draw_pole();   //отрисовка поля
       }
    
 }
 
-void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
+void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
 {
       TILE temp;   temp.id = -1;
       *(tile1) = temp;
@@ -176,31 +176,30 @@ void delete_pair(TILE *tile1, TILE *tile2)  //  удаление
       CON_TILES -= 2;
 }
 
-bool is_season(int tile1, int tile2)  //      проверка сезонная ли фишка
+bool is_season(int tile1, int tile2)  // проверка сезонная ли фишка
 {
    if(tile1 >= 34 && tile2 >= 34)  
       return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);
    else return false;
 }
 
-bool is_avalible(TILE* tile1)   //обновление доступности фишек
+bool is_avalible(TILE* tile1)   //доступна ли фишка
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
-   // фишка под не получает доступ
    if (((Pole[i][j][k+1].id == -1) && (k + 1) <= he) && ((i+1) < 9 && Pole[i + 1][j][k].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k].id == -1) || i == 0 || i == (le - 1))     return true;
       return false;
 }
    
-void click(int *i, int *j)      //клик
+void click(int *i, int *j)      // определение какую фишку выбрал пользователь
 {
-   int x, y;
+   int x, y;    // получение координат
    while(mousebuttons()==1);
    do{
    while(mousebuttons() != 1){
       x = mousex();
       y = mousey();
    }
-   while(mousebuttons()==1);    
+   while(mousebuttons()==1);    //поиск какая фишка в массиве
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
@@ -212,18 +211,20 @@ void acc_avl()  //пересчет доступных пар фишек
    char output[11];
    int i = 0;
    pairAVL = 0;
+   //занесение всех доступных фишек в массив
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
             if(Pole[i][j][k].id != -1 && is_avalible(&Pole[i][j][k]) && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
-   sort(begin(avl_tile), end(avl_tile));
    
-   while((i + 1) < avl_tile.size())
+   sort(begin(avl_tile), end(avl_tile));        //сортировка по возрастанию
+   
+   while((i + 1) < avl_tile.size())     //подсчет доступных пар
    {
       if (avl_tile[i] == avl_tile[i + 1] || is_season(avl_tile[i], avl_tile[i+1])){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
       else      i++;
       }
-   avl_tile.clear();
+   avl_tile.clear();    //отчистка массива от оставшихся фишек
 }
 
 void mix_at_end()       // перемешивание при отсутсвующих фишках
@@ -231,14 +232,16 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
    TILE temp;
    temp.id = 0;
    vector <TILE> curTiles;
+   //зачистка массива
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
             if(Pole[i][j][k].id != -1)     {curTiles.push_back(Pole[i][j][k]);     Pole[i][j][k].id = 0;}
              
     
-   shuffle(curTiles.begin(), curTiles.end(), rng);
+   shuffle(curTiles.begin(), curTiles.end(), rng);      //новое перемешивание
 
+   //переприсвоение значений и координат
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
@@ -251,19 +254,20 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                curTiles.erase(curTiles.begin());
                }
+               
    acc_avl();     
    draw_pole();
-   turn_SW();
+   turn_SW();   //включение секундомера в другом потоке
 }
 
-void border(TILE *tile) // доделать
+void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
    setcolor(WHITE);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
    swapbuffers();
 }
 
-void stopwatch()
+void stopwatch()        // реализация секундомера
 {
    cout << "--" << endl;
    time_t start;
@@ -288,16 +292,16 @@ void stopwatch()
    }
 }
 
-void turn_SW(){thread SW(stopwatch);    SW.detach();}
+void turn_SW(){thread SW(stopwatch);    SW.detach();}   //включение секундомера в другом потоке
 
-void end()
+void end()      //окно при закончившихся доступных фишек
 {
    button but[3];
    char s[25];
    clearviewport();
    threadAcc = false;
    
-   for(int i = 0; i < 3; i++)
+   for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
    {
       sprintf(s, "MENU_STUFF/exit%d.bmp", i);
       if(i != 0)
@@ -307,7 +311,7 @@ void end()
       }
       but[i].bmp = loadBMP(s);
    }
-   for(int i = 0; i < 3; i++)
+   for(int i = 0; i < 3; i++)   // вывод экрана проигрыша и кнопок для выбора
    {
       if (i == 0)       putimage(0, 0, but[i].bmp, COPY_PUT);
       else putimage(but[i].x, but[i].y, but[i].bmp, COPY_PUT);
@@ -315,7 +319,7 @@ void end()
    
    swapbuffers();
    
-   int flag = 0, x, y, st = 0;       // надо бы отдельно запихнуть
+   int flag = 0, x, y, st = 0;       //какая кнопка была нажата
    do {
       while(mousebuttons() != 1){
          x = mousex();
@@ -330,7 +334,7 @@ void end()
    else begin();
 }
 
-void victory()
+void victory()  // окно победы с выходом в главное меню
 {
   clearviewport();
    putimage(0, 0, win.bmp, COPY_PUT);

@@ -14,12 +14,11 @@ typedef struct button { // обьявление структуры кнопок
 
 
 // прототипы функций
-void begin();   //
+void begin();   // приготовление меню и переназначение на окна
 void init_menu();       //инициализация меню
-int menu(int st);       // выбор куда пользователь зашел
+int menu(int st);       // функция для определения куда нажал пользователь
 void drawmenu();        // отрисовка лого и кнопок меню
-void rules_about(int st);
-//void about();
-void close_game();
+void rules_about(int st);       // функция для отрисовки правил/о программе
+void close_game();      //закрытие графического окна
    
 #endif

@@ -2,7 +2,7 @@
 !main.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.h graphics.h keys_n_colors.h #<#>
-!new_game.cpp algorithm array cctype cerrno chrono clocale cmath cstdint cstdio cstdlib ctime ctype.h cwchar cwctype errno.h exception graphics.h initializer_list ios iosfwd iostream istream keys_n_colors.h limits limits.h locale.h math.h memory menu.h new new_game.h numeric ostream random ratio signal.h stddef.h stdexcept stdint.h stdio.h stdlib.h streambuf string string_view system_error thread time.h tuple type_traits typeinfo utility vector wchar.h wctype.h #<#>
+!new_game.cpp algorithm cmath ctime graphics.h iostream keys_n_colors.h menu.h new_game.h random string thread utility vector #<#>
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
@@ -33,7 +33,6 @@ height #<menu.h>
 hours : int #<new_game.cpp>
 init_game() -> void #<new_game.h>
 init_menu() -> void #<menu.h>
-init_menu_pole() -> void #<new_game.h>
 is_avalible(TILE* tile1) -> bool #<new_game.h>
 is_season(int tile1, int tile2) -> bool #<new_game.h>
 layout : const inttileH=55;vector #<new_game.cpp>
@@ -50,7 +49,7 @@ new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
 rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
-rule_about : button #<menu.cpp>
+rulAbt : button #<menu.cpp>
 rules_about(int st) -> void #<menu.h>
 seconds : int #<new_game.cpp>
 stopwatch() -> void #<new_game.h>
