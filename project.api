@@ -2,17 +2,16 @@
 !main.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.h graphics.h keys_n_colors.h #<#>
-!new_game.cpp algorithm cmath ctime graphics.h iostream keys_n_colors.h menu.h new_game.h random string thread utility vector #<#>
+!new_game.cpp algorithm array cctype cerrno chrono clocale cmath cstdint cstdio cstdlib ctime ctype.h cwchar cwctype errno.h exception graphics.h initializer_list ios iosfwd iostream istream keys_n_colors.h limits limits.h locale.h math.h memory menu.h new new_game.h numeric ostream random ratio signal.h stddef.h stdexcept stdint.h stdio.h stdlib.h streambuf string string_view system_error thread time.h tuple type_traits typeinfo utility vector wchar.h wctype.h #<#>
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
 BEIGE #<new_game.h>
 CON_TILES : int #<new_game.cpp>
 ELVOLT #<menu.h>
-FONTS #<menu.h>
 Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
+SW : thread #<new_game.cpp>
 TILE _type_ #<new_game.h>
-about() -> void #<menu.h>
 acc_avl() -> void #<new_game.h>
 avl_tile : vector #<new_game.cpp>
 begOfX : int #<new_game.cpp>
@@ -32,34 +31,35 @@ drawmenu() -> void #<menu.h>
 end() -> void #<new_game.h>
 height #<menu.h>
 hours : int #<new_game.cpp>
-init() -> void #<menu.h>
 init_game() -> void #<new_game.h>
 init_menu() -> void #<menu.h>
 init_menu_pole() -> void #<new_game.h>
-ins : button #<menu.cpp>
 is_avalible(TILE* tile1) -> bool #<new_game.h>
 is_season(int tile1, int tile2) -> bool #<new_game.h>
 layout : const inttileH=55;vector #<new_game.cpp>
 le : const int #<new_game.cpp>
 library : TILE[] #<new_game.cpp>
 logo : button #<menu.cpp>
-lose : intminutes=0, seconds=0;button #<new_game.cpp>
+lose : button #<new_game.cpp>
 main() -> int #<main.cpp>
 maj_init() -> void #<new_game.h>
 menu(int st) -> int #<menu.h>
+minutes : int #<new_game.cpp>
 mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
 rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
 rule_about : button #<menu.cpp>
-rules() -> void #<menu.h>
+rules_about(int st) -> void #<menu.h>
+seconds : int #<new_game.cpp>
 stopwatch() -> void #<new_game.h>
 threadAcc : bool #<new_game.cpp>
 tileW : const int #<new_game.cpp>
+turn_SW() -> void #<new_game.h>
 victory() -> void #<new_game.h>
 width #<menu.h>
-win : int #<new_game.cpp>
+win : button #<new_game.cpp>
 	TILE::name : char[] #<new_game.h>
 	TILE::id : int #<new_game.h>
 	TILE::count : int #<new_game.h>

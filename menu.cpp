@@ -3,18 +3,17 @@
 
 #include "graphics.h"
 
-button but[4];
-button logo;
-button ins;
-button rule_about;
+button but[4];  //обьявление массива кнопок для меню
+button logo;    // лого игры для меню
+button rule_about;      // кнопка для выведения окна "Правила"/"О программе"
 
 const int buttonW = 280, buttonH = 90;  //размеры кнопок меню
-const int mid_width = width / 2, mid_height = height / 2;
+const int mid_width = width / 2, mid_height = height / 2;       
 
 void begin()
 {
-    int st = 1;
-   init();
+   int st = 1;
+   init_menu();
    do{
       st = menu(st);
       switch(st){
@@ -26,13 +25,8 @@ void begin()
    close_game(); 
 }
 
-void init()    // инициализация
-{
-   setbkcolor(ELVOLT);
-   init_menu();
-}
-
 void init_menu(){
+   setbkcolor(ELVOLT);
    char file[30];
    for(int i=0; i <4; i++){
          but[i].dx = 280; but[i].dy = 90; 
@@ -42,8 +36,6 @@ void init_menu(){
    }
    logo.dx = 150; logo.dy = 100;
    logo.x = 60; logo.y = 5;
-   ins.dx = 120; ins.dy = 100;
-   ins.x = mid_width + mid_width / 2; ins.y = 90;
    logo.bmp = loadBMP(".//MENU_STUFF/menu_majong.gif");
 }
 
@@ -76,25 +68,26 @@ int menu(int st)
    return st;
 }
 
-void rules()
+void rules_about(int st)
 {
    clearviewport();
-   rule_about.bmp = loadBMP(".//MENU_STUFF/rules.bmp");
+   if (st == 2) rule_about.bmp = loadBMP(".//MENU_STUFF/rules.bmp");
+   else rule_about.bmp = loadBMP(".//MENU_STUFF/about.bmp");
    putimage(0, 0, rule_about.bmp, COPY_PUT);
    swapbuffers();
    getch();
    begin();
 }
-
+/*
 void about()
 {
    clearviewport();
-   rule_about.bmp = loadBMP(".//MENU_STUFF/about.bmp");
+   
    putimage(0, 0, rule_about.bmp, COPY_PUT);
    swapbuffers();
    getch();
    begin();   
-   
 }
+*/
 
-void close_game(){      closegraph();   }
+void close_game(){      closegraph();   }       // закрытие графического окна

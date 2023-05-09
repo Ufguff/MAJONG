@@ -24,6 +24,7 @@ void acc_avl();
 void mix_at_end();
 void border(TILE *tile);
 void stopwatch();
+void turn_SW();
 void end();
 void victory();
 #endif

@@ -24,15 +24,16 @@ auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2);
 int begOfY = floor((height - (tileH * wi)) / 2) + 50;
 int pairAVL, CON_TILES;
-int hours = 0, minutes = 0, seconds = 0;        //время прохождения
+int hours, minutes, seconds;        //время прохождения
 button lose, win;
 TILE library[42];    //библиотка для фишек
-//thread SW;
-bool threadAcc = true;
+thread SW;
+bool threadAcc;
 
 void new_game(){
    CON_TILES = 144;
    hours = 0; minutes = 0; seconds = 0;
+   threadAcc = true;
    init_menu_pole();
    init_game();
    draw_pole(); 
@@ -135,7 +136,8 @@ void init_menu_pole(){
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;
-   jthread SW(stopwatch);
+   
+   turn_SW();
       while(1)
       {
          if (CON_TILES == 0)       victory();
@@ -161,10 +163,7 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);
             acc_avl();
          }
-         
-         
          draw_pole();
-         pairAVL = 0;
       }
    
 }
@@ -206,7 +205,6 @@ void click(int *i, int *j)      //клик
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
    *j = ceil((y - begOfY) / tileH);
-   
 }
 
 void acc_avl()  //пересчет доступных пар фишек
@@ -253,9 +251,9 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                curTiles.erase(curTiles.begin());
                }
-   acc_avl();
-               
+   acc_avl();     
    draw_pole();
+   turn_SW();
 }
 
 void border(TILE *tile) // доделать
@@ -290,6 +288,8 @@ void stopwatch()
    }
 }
 
+void turn_SW(){thread SW(stopwatch);    SW.detach();}
+
 void end()
 {
    button but[3];
@@ -303,7 +303,7 @@ void end()
       if(i != 0)
       {
          but[i].dx = 280;        but[i].dy = 90;
-         but[i].x = 100 + but[i].dx*(i - 1);       but[i].y = 450;
+         but[i].x = 100 + but[i].dx*(i - 1) + (i - 1)*40;       but[i].y = 450;
       }
       but[i].bmp = loadBMP(s);
    }
