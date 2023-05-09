@@ -2,7 +2,7 @@
 !main.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.h graphics.h keys_n_colors.h #<#>
-!new_game.cpp algorithm cmath ctime graphics.h iostream keys_n_colors.h menu.h new_game.h random string thread utility vector #<#>
+!new_game.cpp algorithm array cctype cerrno chrono clocale cmath cstdint cstdio cstdlib ctime ctype.h cwchar cwctype errno.h exception graphics.h initializer_list ios iosfwd iostream istream keys_n_colors.h limits limits.h locale.h math.h memory menu.h new new_game.h numeric ostream random ratio signal.h stddef.h stdexcept stdint.h stdio.h stdlib.h streambuf string string_view system_error thread time.h tuple type_traits typeinfo utility vector wchar.h wctype.h #<#>
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
@@ -16,7 +16,7 @@ acc_avl() -> void #<new_game.h>
 avl_tile : vector #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
-begin : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;void #<menu.cpp>
+begin : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;int currentPage=0;void #<menu.cpp>
 begin() -> void #<menu.h>
 border(TILE* tile) -> void #<new_game.h>
 but : button[] #<menu.cpp>
@@ -52,6 +52,8 @@ rng : auto #<new_game.cpp>
 rulAbt : button #<menu.cpp>
 rules_about(int st) -> void #<menu.h>
 seconds : int #<new_game.cpp>
+setACPage() -> void #<menu.h>
+setVSPage() -> void #<menu.h>
 stopwatch() -> void #<new_game.h>
 threadAcc : bool #<new_game.cpp>
 tileW : const int #<new_game.cpp>

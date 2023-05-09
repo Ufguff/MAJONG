@@ -13,7 +13,7 @@
 #include "graphics.h"
 
 using namespace std;
-
+//int currentPage = 0;    // для новых окон и анимации
 const int le = 9, wi = 7, he = 5;      // размеры массива пирамиды
 TILE Pole[le][wi][he];     // обьявление трехмерного массива
 const int tileW = 45, tileH = 55;       //размеры фишки в пикселях
@@ -24,7 +24,7 @@ auto rd = random_device {};
 auto rng = default_random_engine {rd()};
 
 int begOfX = floor((width - (tileW * le)) / 2); //начальная координата по X для вывода всей пирамиды
-int begOfY = floor((height - (tileH * wi)) / 2) + 50;   //начальная координата по Y для вывода всей пирамиды
+int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата по Y для вывода всей пирамиды
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
 int hours, minutes, seconds;        //время прохождения
 button lose, win;       //окна для вывода проигрыша или выигрыше
@@ -91,8 +91,10 @@ void maj_init() //предварительное создание поля и его заполнение
 }
    
 void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
+   setVSPage();
    clearviewport();
    char output[20];
+   settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 1);
    setcolor(BEIGE);     //установка цвета для текста
    sprintf(output, "Осталось фишек: %d", CON_TILES);
    outtextxy(400, 50, output);
@@ -105,7 +107,8 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
                     if (Pole[i][j][k].id != -1) {
                      putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
                   }
-   swapbuffers();
+   //swapbuffers();
+   setACPage();
    }
 
 
@@ -299,7 +302,7 @@ void end()      //окно при закончившихся доступных фишек
    button but[3];
    char s[25];
    clearviewport();
-   threadAcc = false;
+   threadAcc = false;   // прекращение работы таймера
    
    for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
    {
@@ -336,8 +339,12 @@ void end()      //окно при закончившихся доступных фишек
 
 void victory()  // окно победы с выходом в главное меню
 {
-  clearviewport();
-   putimage(0, 0, win.bmp, COPY_PUT);
+   char res[30];
+   clearviewport();
+   threadAcc = false;   // прекращение работы таймера
+   putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
+   sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);
+   outtextxy(400, 300, res);    // вывод времени прохождения
    swapbuffers();
    getch();
    clearviewport();

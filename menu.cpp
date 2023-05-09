@@ -9,6 +9,7 @@ button rulAbt;      // кнопка для выведения окна "Правила"/"О программе"
 
 const int buttonW = 280, buttonH = 90;  //размеры кнопок меню
 const int mid_width = width / 2, mid_height = height / 2;       
+int currentPage = 0;    // для новых окон и анимации
 
 void begin()// приготовление меню и переназначение на окна
 {
@@ -27,6 +28,7 @@ void begin()// приготовление меню и переназначение на окна
 }
 
 void init_menu(){
+   setVSPage();
    setbkcolor(ELVOLT);  //      установка цвета фона
    char file[30];       //массив для обозначения пути файла кнопки
    for(int i=0; i <4; i++){     // присваивание координат кнопкам а также указание пути
@@ -50,7 +52,7 @@ void drawmenu() // отрисовка лого и кнопок меню
    for(int i=0; i <4; i++){     //вставка на экран лого и кнопок
         putimage(but[i].x , but[i].y, but[i].bmp, COPY_PUT); 
    }
-   swapbuffers();
+   setACPage();
 }
 
 
@@ -72,13 +74,25 @@ int menu(int st)
 
 void rules_about(int st)
 {
+   setVSPage();
    clearviewport();
    if (st == 2) rulAbt.bmp = loadBMP(".//MENU_STUFF/rules.bmp");        //проверка какой файл надо вывести на экран
    else rulAbt.bmp = loadBMP(".//MENU_STUFF/about.bmp");
    putimage(0, 0, rulAbt.bmp, COPY_PUT);        //вывод
-   swapbuffers();
+   
+   setACPage();
+   
    getch();     //ожидание нажатия кнопки
    begin();     // выход в меню
 }
 
 void close_game(){      closegraph();   }       // закрытие графического окна
+
+void setVSPage()
+{
+   setvisualpage(currentPage);
+   currentPage++;
+   if(currentPage == 3)        currentPage = 0;
+}
+
+void setACPage(){       setactivepage(currentPage);     }

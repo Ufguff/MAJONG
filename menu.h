@@ -7,6 +7,8 @@
 #define width 800
 #define height 600
 
+
+
 typedef struct button { // обьявление структуры кнопок
    int x, y, dx, dy;
    IMAGE * bmp;
@@ -20,5 +22,7 @@ int menu(int st);       // функция для определения куда нажал пользователь
 void drawmenu();        // отрисовка лого и кнопок меню
 void rules_about(int st);       // функция для отрисовки правил/о программе
 void close_game();      //закрытие графического окна
+void setVSPage();
+void setACPage();
    
 #endif
