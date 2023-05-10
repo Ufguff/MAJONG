@@ -14,6 +14,8 @@ void draw_pole();       //отрисовывает фишки на поле, а также сколько осталось и
 void init_game();       // инициализация библиотеки и раскладки
 void maj_init();        //предварительное создание поля и его заполнение
    
+   
+void definition_XY(int *i, int *y, int *k);
 void core_game();       // основной процесс игры
 void click(int *i, int *j);     // определение какую фишку выбрал пользователь
 void delete_pair(TILE *tile1, TILE *tile2);     //  удаление фишек

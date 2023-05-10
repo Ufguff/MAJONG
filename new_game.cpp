@@ -143,25 +143,14 @@ void core_game()        // основной процесс игры
       {
          if (CON_TILES == 0)       victory();   //условия для проигрыша или выигрыша
          else if (pairAVL == 0)    end();
-         //выбор 1 фишки и нахождение её позиции в массиве
-         click(&i1, &j1);
-         for (int k = he - 1; k >= 0; k--) {
-            if(Pole[i1][j1][k].id == -1)      continue;
-            else{k1 = k; break;}
-            }
-         //border(&Pole[i1][j1][k1]);
          
-         //выбор 2 фишки и нахождение её позиции в массиве            
-         click(&i2, &j2);
-         for (int k = he - 1; k >= 0; k--)  {
-            if(Pole[i2][j2][k].id == -1)      continue;
-            else{k2 = k; break;}
-            }
-         //border(&Pole[i2][j2][k2]);
+         definition_XY(&i1, &j1, &k1);
+         
+         definition_XY(&i2, &j2, &k2);
          
          if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка то игнорируем
          
-         //если фишки одинаковы
+         //если фишки одинаковы или они одинаковые как сезонные
          if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             acc_avl(); //пересчет доступных пар фишек
@@ -169,6 +158,19 @@ void core_game()        // основной процесс игры
          draw_pole();   //отрисовка поля
       }
    
+}
+
+void definition_XY(int *i, int *j, int *k)
+{
+   //выбор 1 фишки и нахождение её позиции в массиве
+   //setVSPage();
+   click(i, j);
+   for (int kn = he - 1; kn >= 0; kn--) {
+      if(Pole[*i][*j][kn].id == -1)      continue;
+      else{(*k) = kn; break;}
+      }
+   //border(&Pole[*i][*j][*k]);
+   //setACPage();
 }
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
@@ -272,6 +274,7 @@ void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffer
 
 void stopwatch()        // реализация секундомера
 {
+   char s[20];
    cout << "--" << endl;
    time_t start;
    struct tm *now;
@@ -285,8 +288,12 @@ void stopwatch()        // реализация секундомера
       now = localtime(&start);
       s1 = now->tm_sec;
       if (s1 != s0){
+         //setVSPage();   //1
          s0 = s1;
          seconds++;
+         sprintf(s, "Время: %02d:%02d", minutes, seconds);
+         outtextxy(200 ,50, s);
+         //setACPage();   //2
          printf("Timer - %02d:%02d:%02d\n", hours, minutes, seconds);
          if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
          if (seconds == 59){ minutes++;   seconds = -1; }
