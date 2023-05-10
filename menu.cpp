@@ -87,7 +87,7 @@ void rules_about(int st)
    begin();     // выход в меню
 }
 
-void close_game(){      closegraph();   }       // закрытие графического окна
+void close_game(){  closegraph();   }       // закрытие графического окна
 
 void setVSPage()
 {

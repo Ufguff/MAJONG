@@ -37,6 +37,9 @@ void new_game(){        //отрисовка массива и движок игры
    hours = 0; minutes = 0; seconds = 0;
    threadAcc = true;
    
+   settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 1);
+   setcolor(BEIGE);     //установка цвета для текста
+   
    init_game();
    draw_pole(); 
    core_game();
@@ -94,12 +97,12 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    setVSPage();
    clearviewport();
    char output[20];
-   settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 1);
-   setcolor(BEIGE);     //установка цвета для текста
-   sprintf(output, "Осталось фишек: %d", CON_TILES);
-   outtextxy(400, 50, output);
-   sprintf(output, "Осталось ходов: %d", pairAVL);
-   outtextxy(600, 50, output); 
+   sprintf(output, "Осталось фишек: %d", CON_TILES);    // вывод оставшихся фишек
+   outtextxy(350, 50, output);
+   sprintf(output, "Осталось ходов: %d", pairAVL);      // вывод оставшихся ходов
+   outtextxy(550, 50, output); 
+   printSW();   // вывод секундомера
+   
    for(int k = 0; k < he; k++)  // выведение картинок фишек
          for(int j = 0; j < wi; j++)
             for(int i = 0; i < le; i++)
@@ -107,7 +110,6 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
                     if (Pole[i][j][k].id != -1) {
                      putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
                   }
-   //swapbuffers();
    setACPage();
    }
 
@@ -124,7 +126,6 @@ void init_game(){       // инициализация библиотеки и раскладки
          sprintf(library[i].name, ".//TILES/tile%d.bmp", i+1);    
          library[i].bmp = loadBMP(library[i].name); 
 	}
-        
         
    for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }       //создание раскладки
 
@@ -160,17 +161,14 @@ void core_game()        // основной процесс игры
    
 }
 
-void definition_XY(int *i, int *j, int *k)
+void definition_XY(int *i, int *j, int *k)      // определение координат в массиве
 {
-   //выбор 1 фишки и нахождение её позиции в массиве
-   //setVSPage();
-   click(i, j);
-   for (int kn = he - 1; kn >= 0; kn--) {
+   click(i, j);         // определение координат по XY и в массиве
+   for (int kn = he - 1; kn >= 0; kn--) {       // определение на каком этаже находится фишка
       if(Pole[*i][*j][kn].id == -1)      continue;
       else{(*k) = kn; break;}
       }
-   //border(&Pole[*i][*j][*k]);
-   //setACPage();
+   border(&Pole[*i][*j][*k]);
 }
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
@@ -267,15 +265,11 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
-   setcolor(WHITE);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
-   swapbuffers();
 }
 
 void stopwatch()        // реализация секундомера
 {
-   char s[20];
-   cout << "--" << endl;
    time_t start;
    struct tm *now;
    int s1, s0 = 0;
@@ -288,12 +282,9 @@ void stopwatch()        // реализация секундомера
       now = localtime(&start);
       s1 = now->tm_sec;
       if (s1 != s0){
-         //setVSPage();   //1
          s0 = s1;
          seconds++;
-         sprintf(s, "Время: %02d:%02d", minutes, seconds);
-         outtextxy(200 ,50, s);
-         //setACPage();   //2
+         printSW();
          printf("Timer - %02d:%02d:%02d\n", hours, minutes, seconds);
          if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
          if (seconds == 59){ minutes++;   seconds = -1; }
@@ -302,15 +293,23 @@ void stopwatch()        // реализация секундомера
    }
 }
 
+void printSW()  // вывод секундомера
+{
+   char s[20];
+   sprintf(s, "Время: %02d:%02d", minutes, seconds);
+   outtextxy(200 ,50, s);
+}
+
 void turn_SW(){thread SW(stopwatch);    SW.detach();}   //включение секундомера в другом потоке
 
 void end()      //окно при закончившихся доступных фишек
 {
    button but[3];
    char s[25];
-   clearviewport();
    threadAcc = false;   // прекращение работы таймера
    
+   setVSPage();
+   clearviewport();
    for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
    {
       sprintf(s, "MENU_STUFF/exit%d.bmp", i);
@@ -327,7 +326,7 @@ void end()      //окно при закончившихся доступных фишек
       else putimage(but[i].x, but[i].y, but[i].bmp, COPY_PUT);
    }
    
-   swapbuffers();
+   setACPage();
    
    int flag = 0, x, y, st = 0;       //какая кнопка была нажата
    do {
@@ -347,12 +346,13 @@ void end()      //окно при закончившихся доступных фишек
 void victory()  // окно победы с выходом в главное меню
 {
    char res[30];
+   setVSPage();
    clearviewport();
    threadAcc = false;   // прекращение работы таймера
    putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
    sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);
    outtextxy(400, 300, res);    // вывод времени прохождения
-   swapbuffers();
+   setACPage();
    getch();
    clearviewport();
    begin(); 

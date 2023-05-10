@@ -15,7 +15,7 @@ void init_game();       // инициализация библиотеки и раскладки
 void maj_init();        //предварительное создание поля и его заполнение
    
    
-void definition_XY(int *i, int *y, int *k);
+void definition_XY(int *i, int *y, int *k);     // определение координат в массиве
 void core_game();       // основной процесс игры
 void click(int *i, int *j);     // определение какую фишку выбрал пользователь
 void delete_pair(TILE *tile1, TILE *tile2);     //  удаление фишек
@@ -25,6 +25,7 @@ void acc_avl(); //пересчет доступных пар фишек
 void mix_at_end();      // перемешивание при отсутсвующих фишках
 void border(TILE *tile);        // границы при нажатии на фишку(не работает с swapbuffers())
 void stopwatch();       // реализация секундомера
+void printSW(); // вывод секундомера
 void turn_SW(); //включение таймера в другом потоке
 void end();     //окно при закончившихся доступных фишек
 void victory(); // окно победы с выходом в главное меню
