@@ -37,8 +37,7 @@ void new_game(){        //отрисовка массива и движок игры
    hours = 0; minutes = 0; seconds = 0;
    threadAcc = true;
    
-   settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 1);
-   setcolor(BEIGE);     //установка цвета для текста
+   settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 2);
    
    init_game();
    draw_pole(); 
@@ -138,7 +137,6 @@ void init_game(){       // инициализация библиотеки и раскладки
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
-   
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
@@ -149,7 +147,7 @@ void core_game()        // основной процесс игры
          
          definition_XY(&i2, &j2, &k2);
          
-         if (i1 == i2 && j1 == j2 && k1 == k2)     continue;      //если одна и та же фишка то игнорируем
+         if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
          //если фишки одинаковы или они одинаковые как сезонные
          if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
@@ -169,6 +167,7 @@ void definition_XY(int *i, int *j, int *k)      // определение координат в масси
       else{(*k) = kn; break;}
       }
    border(&Pole[*i][*j][*k]);
+   delay(500);
 }
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
@@ -285,7 +284,7 @@ void stopwatch()        // реализация секундомера
          s0 = s1;
          seconds++;
          printSW();
-         printf("Timer - %02d:%02d:%02d\n", hours, minutes, seconds);
+         //printf("Timer - %02d:%02d:%02d\n", hours, minutes, seconds);
          if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
          if (seconds == 59){ minutes++;   seconds = -1; }
          
@@ -345,9 +344,11 @@ void end()      //окно при закончившихся доступных фишек
 
 void victory()  // окно победы с выходом в главное меню
 {
+   setcolor(BEIGE);     //установка цвета для текста
    char res[30];
    setVSPage();
    clearviewport();
+   while(kbhit())       getch();
    threadAcc = false;   // прекращение работы таймера
    putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
    sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);

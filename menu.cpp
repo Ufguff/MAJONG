@@ -1,6 +1,5 @@
 #include "menu.h"
 #include "new_game.h"
-
 #include "graphics.h"
 
 button but[4];  //обьявление массива кнопок для меню
@@ -94,8 +93,6 @@ void setVSPage()
    if(currentPage == 3)        currentPage = 0;
    currentPage++;
    setactivepage(currentPage);
-   
-   
 }
 
 void setACPage(){       setvisualpage(currentPage);     }
