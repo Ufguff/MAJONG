@@ -13,21 +13,22 @@
 #include "graphics.h"
 
 using namespace std;
-//int currentPage = 0;    // для новых окон и анимации
 const int le = 9, wi = 7, he = 5;      // размеры массива пирамиды
 TILE Pole[le][wi][he];     // обьявление трехмерного массива
 const int tileW = 45, tileH = 55;       //размеры фишки в пикселях
 vector <pair<int, int>> layout; //раскладка фишек
 vector<int> avl_tile;   //массив доступных фишек для их дальнейшего подсчета
+vector <TILE> for_find; // промежуточный вектор для поиска find_tiles
+pair<TILE,TILE> founds; // найденная пара для find_tiles
 // для рандомизации раскладки
 auto rd = random_device {}; 
 auto rng = default_random_engine {rd()};
-
-int begOfX = floor((width - (tileW * le)) / 2); //начальная координата по X для вывода всей пирамиды
+//
+int begOfX = floor((width - (tileW * le)) / 2) - 50; //начальная координата по X для вывода всей пирамиды
 int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата по Y для вывода всей пирамиды
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
 int hours, minutes, seconds;        //время прохождения
-button lose, win;       //окна для вывода проигрыша или выигрыше
+button lose, win, exitOn, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
 thread SW;      //обьявление потока для секундомера
 bool threadAcc; //для включение/выключение таймера
@@ -76,7 +77,7 @@ void maj_init() //предварительное создание поля и его заполнение
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
          {
-            if (Pole[i][j][k].id == 0)  {       
+            if (Pole[i][j][k].id == 0)  {
                Pole[i][j][k].id = layout[0].first;
                strcpy(Pole[i][j][k].name, library[layout[0].first].name);
                Pole[i][j][k].i = i;
@@ -95,11 +96,12 @@ void maj_init() //предварительное создание поля и его заполнение
 void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
    setVSPage();
    clearviewport();
+   setcolor(WHITE);
    char output[20];
    sprintf(output, "Осталось фишек: %d", CON_TILES);    // вывод оставшихся фишек
-   outtextxy(350, 50, output);
+   outtextxy(350, 30, output);
    sprintf(output, "Осталось ходов: %d", pairAVL);      // вывод оставшихся ходов
-   outtextxy(550, 50, output); 
+   outtextxy(560, 30, output); 
    printSW();   // вывод секундомера
    
    for(int k = 0; k < he; k++)  // выведение картинок фишек
@@ -109,6 +111,8 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
                     if (Pole[i][j][k].id != -1) {
                      putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
                   }
+   putimage(10, 10, exitOn.bmp);
+   putimage(700, 300, findTiles.bmp);
    setACPage();
    }
 
@@ -118,6 +122,9 @@ void init_game(){       // инициализация библиотеки и раскладки
    clearviewport();
    lose.bmp = loadBMP(".//MENU_STUFF/lose.bmp");
    win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
+   exitOn.bmp = loadBMP(".//MENU_STUFF/exit2.bmp");
+   findTiles.bmp = loadBMP(".//MENU_STUFF/find.bmp");
+   exitOn.bmp = imageresize(exitOn.bmp, 180, 60, COLORONCOLOR_RESIZE);
    for (int i = 0; i < 42; i++) { // создание библиотеки фишек
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
@@ -167,7 +174,7 @@ void definition_XY(int *i, int *j, int *k)      // определение координат в масси
       else{(*k) = kn; break;}
       }
    border(&Pole[*i][*j][*k]);
-   delay(500);
+   delay(300);  //мне кажется идеальный delay
 }
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
@@ -201,7 +208,11 @@ void click(int *i, int *j)      // определение какую фишку выбрал пользователь
       x = mousex();
       y = mousey();
    }
-   while(mousebuttons()==1);    //поиск какая фишка в массиве
+   while(mousebuttons()==1);   //поиск какая фишка в массиве
+   
+   if (x >= 10 && x <= 190 && y >= 10 && y <= 70){threadAcc = false;     begin();}      //выход
+   if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
+
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
@@ -217,16 +228,22 @@ void acc_avl()  //пересчет доступных пар фишек
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].id != -1 && is_avalible(&Pole[i][j][k]) && (Pole[i][j][k+1].id == -1))      avl_tile.push_back(Pole[i][j][k].id);
+            if(Pole[i][j][k].id != -1 && is_avalible(&Pole[i][j][k]) && (Pole[i][j][k+1].id == -1))      
+            {avl_tile.push_back(Pole[i][j][k].id);      for_find.push_back(Pole[i][j][k]);}
    
    sort(begin(avl_tile), end(avl_tile));        //сортировка по возрастанию
    
+   for(int i = 0; i < for_find.size() - 1; i++) // нахождение 1 пары фишек и занесения в pair для функции find_tiles()
+      for(int j = i + 1; j < for_find.size(); j++)
+         if (for_find[i].id == for_find[j].id)  {founds = make_pair(for_find[i], for_find[j]);   break;}
+         
    while((i + 1) < avl_tile.size())     //подсчет доступных пар
    {
       if (avl_tile[i] == avl_tile[i + 1] || is_season(avl_tile[i], avl_tile[i+1])){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
       else      i++;
       }
    avl_tile.clear();    //отчистка массива от оставшихся фишек
+   for_find.clear();
 }
 
 void mix_at_end()       // перемешивание при отсутсвующих фишках
@@ -264,7 +281,16 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
+   //setcolor(BR);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
+}
+
+void find_tiles()       // нахождение фишек если пользователь их не видит
+{
+   border(&founds.first);        border(&founds.second);
+   
+   //rectangle(founds.first.x, founds.first.y, founds.first.x + tileW, founds.first.y + tileH);
+   //rectangle(founds.second.x, founds.second.y, founds.second.x + tileW, founds.second.y + tileH);
 }
 
 void stopwatch()        // реализация секундомера
@@ -277,6 +303,7 @@ void stopwatch()        // реализация секундомера
    s0 = now->tm_sec;
    while(threadAcc)
    {
+      setcolor(WHITE);
       start = time(NULL);
       now = localtime(&start);
       s1 = now->tm_sec;
@@ -296,7 +323,7 @@ void printSW()  // вывод секундомера
 {
    char s[20];
    sprintf(s, "Время: %02d:%02d", minutes, seconds);
-   outtextxy(200 ,50, s);
+   outtextxy(210 , 30, s);
 }
 
 void turn_SW(){thread SW(stopwatch);    SW.detach();}   //включение секундомера в другом потоке

@@ -1,7 +1,8 @@
 #ifndef _GAME_
 #define _GAME_
-#define AVOCADO COLOR(82, 102, 0)
+#define AVOCADO COLOR(113, 136, 20)
 #define BEIGE COLOR(247, 224, 193)
+#define BR COLOR(136, 43, 20)
 
 typedef struct TILE {   //структура фишки
    char name[20];
@@ -14,7 +15,8 @@ void draw_pole();       //отрисовывает фишки на поле, а также сколько осталось и
 void init_game();       // инициализация библиотеки и раскладки
 void maj_init();        //предварительное создание поля и его заполнение
    
-   
+
+void find_tiles();      // нахождение фишек если пользователь их не видит
 void definition_XY(int *i, int *y, int *k);     // определение координат в массиве
 void core_game();       // основной процесс игры
 void click(int *i, int *j);     // определение какую фишку выбрал пользователь

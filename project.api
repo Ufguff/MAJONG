@@ -7,6 +7,7 @@
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
 BEIGE #<new_game.h>
+BR #<new_game.h>
 CON_TILES : int #<new_game.cpp>
 ELVOLT #<menu.h>
 Pole : const intwi=7, he=5;TILE[][][] #<new_game.cpp>
@@ -31,6 +32,11 @@ delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
 end() -> void #<new_game.h>
+exitOn : button #<new_game.cpp>
+findTiles : button #<new_game.cpp>
+find_tiles() -> void #<new_game.h>
+for_find : vector #<new_game.cpp>
+founds : pair #<new_game.cpp>
 height #<menu.h>
 hours : int #<new_game.cpp>
 init_game() -> void #<new_game.h>
