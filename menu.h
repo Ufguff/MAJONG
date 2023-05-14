@@ -1,12 +1,12 @@
 #ifndef _MENU_
 #define _MENU_
+
 #include "graphics.h"
 #define ELVOLT COLOR(131, 158, 23)      //цвет, используемый для фона
 
 // длина и ширина графического окна
 #define width 800
 #define height 600
-
 
 
 typedef struct button { // обьявление структуры кнопок
@@ -24,5 +24,6 @@ void rules_about(int st);       // функция для отрисовки правил/о программе
 void close_game();      //закрытие графического окна
 void setVSPage();
 void setACPage();
+void continue_game();
    
 #endif

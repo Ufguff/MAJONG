@@ -28,19 +28,24 @@ int begOfX = floor((width - (tileW * le)) / 2) - 50; //начальная координата по X
 int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата по Y для вывода всей пирамиды
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
 int hours, minutes, seconds;        //время прохождения
-button lose, win, exitOn, findTiles;       //окна для вывода проигрыша или выигрыше
+button lose, win, gMenu, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
 thread SW;      //обьявление потока для секундомера
 bool threadAcc; //для включение/выключение таймера
+extern bool contGame;
+
 
 void new_game(){        //отрисовка массива и движок игры
-   CON_TILES = 144;
-   hours = 0; minutes = 0; seconds = 0;
-   threadAcc = true;
-   
    settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 2);
    
+   if (!contGame){
+   CON_TILES = 144;
+   hours = 0; minutes = 0; seconds = 0;
+   
    init_game();
+   }
+   
+   threadAcc = true;
    draw_pole(); 
    core_game();
 }
@@ -111,7 +116,7 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
                     if (Pole[i][j][k].id != -1) {
                      putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
                   }
-   putimage(10, 10, exitOn.bmp);
+   putimage(10, 10, gMenu.bmp);
    putimage(700, 300, findTiles.bmp);
    setACPage();
    }
@@ -122,9 +127,9 @@ void init_game(){       // инициализация библиотеки и раскладки
    clearviewport();
    lose.bmp = loadBMP(".//MENU_STUFF/lose.bmp");
    win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
-   exitOn.bmp = loadBMP(".//MENU_STUFF/exit2.bmp");
+   gMenu.bmp = loadBMP(".//MENU_STUFF/gMenu.bmp");
    findTiles.bmp = loadBMP(".//MENU_STUFF/find.bmp");
-   exitOn.bmp = imageresize(exitOn.bmp, 180, 60, COLORONCOLOR_RESIZE);
+   //exitOn.bmp = imageresize(exitOn.bmp, 180, 60, COLORONCOLOR_RESIZE);
    for (int i = 0; i < 42; i++) { // создание библиотеки фишек
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
@@ -168,12 +173,14 @@ void core_game()        // основной процесс игры
 
 void definition_XY(int *i, int *j, int *k)      // определение координат в массиве
 {
+   (*k) = -1;
    click(i, j);         // определение координат по XY и в массиве
    for (int kn = he - 1; kn >= 0; kn--) {       // определение на каком этаже находится фишка
       if(Pole[*i][*j][kn].id == -1)      continue;
       else{(*k) = kn; break;}
       }
-   border(&Pole[*i][*j][*k]);
+   // cout << (*k) << endl;
+   if (*k != -1)border(&Pole[*i][*j][*k]);
    delay(300);  //мне кажется идеальный delay
 }
 
@@ -210,7 +217,7 @@ void click(int *i, int *j)      // определение какую фишку выбрал пользователь
    }
    while(mousebuttons()==1);   //поиск какая фишка в массиве
    
-   if (x >= 10 && x <= 190 && y >= 10 && y <= 70){threadAcc = false;     begin();}      //выход
+   if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     begin();}      //меню
    if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
 
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
@@ -288,9 +295,6 @@ void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffer
 void find_tiles()       // нахождение фишек если пользователь их не видит
 {
    border(&founds.first);        border(&founds.second);
-   
-   //rectangle(founds.first.x, founds.first.y, founds.first.x + tileW, founds.first.y + tileH);
-   //rectangle(founds.second.x, founds.second.y, founds.second.x + tileW, founds.second.y + tileH);
 }
 
 void stopwatch()        // реализация секундомера
@@ -385,3 +389,5 @@ void victory()  // окно победы с выходом в главное меню
    clearviewport();
    begin(); 
 }
+
+

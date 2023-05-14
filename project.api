@@ -17,7 +17,6 @@ acc_avl() -> void #<new_game.h>
 avl_tile : vector #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
-begin : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;int currentPage=-1;void #<menu.cpp>
 begin() -> void #<menu.h>
 border(TILE* tile) -> void #<new_game.h>
 but : button[] #<menu.cpp>
@@ -25,6 +24,8 @@ button _type_ #<menu.h>
 buttonW : const int #<menu.cpp>
 click(int* i, int* j) -> void #<new_game.h>
 close_game() -> void #<menu.h>
+contGame : bool #<new_game.cpp>
+continue_game() -> void #<menu.h>
 core_game() -> void #<new_game.h>
 definition_XY(int* i, int* j, int* k) -> void #<new_game.cpp>
 definition_XY(int* i, int* y, int* k) -> void #<new_game.h>
@@ -32,11 +33,12 @@ delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
 end() -> void #<new_game.h>
-exitOn : button #<new_game.cpp>
+false : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;int currentPage=-1;bool contGame= #<menu.cpp>
 findTiles : button #<new_game.cpp>
 find_tiles() -> void #<new_game.h>
 for_find : vector #<new_game.cpp>
 founds : pair #<new_game.cpp>
+gMenu : button #<new_game.cpp>
 height #<menu.h>
 hours : int #<new_game.cpp>
 init_game() -> void #<new_game.h>

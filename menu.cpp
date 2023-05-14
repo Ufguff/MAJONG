@@ -9,21 +9,67 @@ button rulAbt;      // кнопка для выведения окна "Правила"/"О программе"
 const int buttonW = 280, buttonH = 90;  //размеры кнопок меню
 const int mid_width = width / 2, mid_height = height / 2;       
 int currentPage = -1;    // для новых окон и анимации
+bool contGame = false;
 
 void begin()// приготовление меню и переназначение на окна
 {
+   
    int st = 1;  //статус - какой пункт меню будет нажат
    init_menu(); //подготовка и отрисовка меню
    do{
       st = menu(st);
       switch(st){       // переназначение на окно которое выбрал пользователь
-         case 1: new_game(); break;     // Новая игра 
+         case 1: 
+            if (contGame)       continue_game();
+            else new_game(); 
+            break;     // Новая игра 
          default:       //Правила/О программе
             if (st != 4)        rules_about(st);
             break;
       }
    } while(st != 4);
    close_game();        //закрытие графического окна
+}
+
+void continue_game()
+{
+   button res[3];
+   char s[25];
+   
+   setVSPage();
+   clearviewport();
+   for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
+   {
+      sprintf(s, ".//MENU_STUFF/restart%d.bmp", i);
+      if(i != 0)
+      {
+         res[i].dx = 280;        res[i].dy = 90;
+         res[i].x = 100 + res[i].dx*(i - 1) + (i - 1)*40;       res[i].y = 450;
+      }
+      res[i].bmp = loadBMP(s);
+   }
+   for(int i = 0; i < 3; i++)   // вывод экрана проигрыша и кнопок для выбора
+   {
+      if (i == 0)       putimage(0, 0, res[i].bmp, COPY_PUT);
+      else putimage(res[i].x, res[i].y, res[i].bmp, COPY_PUT);
+   }
+   
+   setACPage();
+   
+   int flag = 0, x, y, st = 0;       //какая кнопка была нажата
+   do {
+      while(mousebuttons() != 1){
+         x = mousex();
+         y = mousey();}
+         for(int i = 1; i < 3; i++){
+            if (x >= res[i].x && x <= res[i].x + res[i].dx && y >= res[i].y && y <= res[i].y + res[i].dy)
+            {flag = 1; st = i+1;  break; }
+            }
+   }while(!flag);
+   
+   if(st == 2)  {contGame = true;}
+   else contGame = false;
+   new_game();
 }
 
 void init_menu(){
@@ -54,7 +100,6 @@ void drawmenu() // отрисовка лого и кнопок меню
    }
    setACPage();
 }
-
 
 int menu(int st)
 {
