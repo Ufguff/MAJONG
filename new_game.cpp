@@ -179,7 +179,6 @@ void definition_XY(int *i, int *j, int *k)      // определение координат в масси
       if(Pole[*i][*j][kn].id == -1)      continue;
       else{(*k) = kn; break;}
       }
-   // cout << (*k) << endl;
    if (*k != -1)border(&Pole[*i][*j][*k]);
    delay(300);  //мне кажется идеальный delay
 }
