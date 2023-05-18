@@ -126,9 +126,9 @@ void rules_about(int st)
    putimage(0, 0, rulAbt.bmp, COPY_PUT);        //вывод
    
    setACPage();
-   
+   while(kbhit())       getch();
    getch();     //ожидание нажатия кнопки
-   begin();     // выход в меню
+   //begin();     // выход в меню
 }
 
 void close_game(){  closegraph();   }       // закрытие графического окна

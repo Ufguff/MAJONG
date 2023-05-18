@@ -88,7 +88,7 @@ void maj_init() //предварительное создание поля и его заполнение
                Pole[i][j][k].i = i;
                Pole[i][j][k].j = j;
                Pole[i][j][k].k = k;
-               Pole[i][j][k].x = begOfX + (i * tileW) - k*4;
+               Pole[i][j][k].x = begOfX + (i * tileW) - k*4 + 10;
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
                layout.erase(layout.begin()); 
@@ -217,7 +217,7 @@ void click(int *i, int *j)      // определение какую фишку выбрал пользователь
    }
    while(mousebuttons()==1);   //поиск какая фишка в массиве
    
-   if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     begin();}      //меню
+   if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     begin();}      //меню      1
    if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
 
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
@@ -370,7 +370,7 @@ void end()      //окно при закончившихся доступных фишек
    }while(!flag);
    
    if(st == 2)  {threadAcc = true;   mix_at_end();}
-   else begin();
+   else begin();        // 2
 }
 
 void victory()  // окно победы с выходом в главное меню
@@ -383,11 +383,10 @@ void victory()  // окно победы с выходом в главное меню
    threadAcc = false;   // прекращение работы таймера
    putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
    sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);
-   outtextxy(400, 300, res);    // вывод времени прохождения
+   setcolor(BEIGE);
+   outtextxy(370, 300, res);    // вывод времени прохождения
    setACPage();
    getch();
    clearviewport();
    begin(); 
 }
-
-
