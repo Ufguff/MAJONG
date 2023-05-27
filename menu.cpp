@@ -83,8 +83,8 @@ void init_menu(){
          but[i].bmp = loadBMP(file);
    }
    // тоже самое отдельно для лого
-   logo.dx = 150; logo.dy = 100;
-   logo.x = 60; logo.y = 5;
+   //logo.dx = 150; logo.dy = 100;
+   logo.x = 50; logo.y = 0;
    logo.bmp = loadBMP(".//MENU_STUFF/menu_majong.gif");
 }
 
@@ -94,7 +94,7 @@ void drawmenu() // отрисовка лого и кнопок меню
 {
    setVSPage();
    clearviewport();
-   putimage(logo.x, logo.y, logo.bmp, TRANSPARENT_PUT);
+   putimage(logo.x, logo.y, logo.bmp, COPY_PUT);
    for(int i=0; i <4; i++){     //вставка на экран лого и кнопок
         putimage(but[i].x , but[i].y, but[i].bmp, COPY_PUT); 
    }

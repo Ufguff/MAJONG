@@ -152,12 +152,12 @@ void core_game()        // основной процесс игры
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
-         if (CON_TILES == 0)       victory();   //условия для проигрыша или выигрыша
-         else if (pairAVL == 0)    end();
+         if (CON_TILES == 0)       if(victory())        break;   //условия для проигрыша или выигрыша
+         else if (pairAVL == 0)    {bool f = end();    if(f) break;}
          
-         definition_XY(&i1, &j1, &k1);
+         if(definition_XY(&i1, &j1, &k1))       break;
          
-         definition_XY(&i2, &j2, &k2);
+         if(definition_XY(&i2, &j2, &k2))       break;
          
          if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
@@ -171,16 +171,17 @@ void core_game()        // основной процесс игры
    
 }
 
-void definition_XY(int *i, int *j, int *k)      // определение координат в массиве
+bool definition_XY(int *i, int *j, int *k)      // определение координат в массиве
 {
    (*k) = -1;
-   click(i, j);         // определение координат по XY и в массиве
+   if(click(i, j))      return true;         // определение координат по XY и в массиве
    for (int kn = he - 1; kn >= 0; kn--) {       // определение на каком этаже находится фишка
       if(Pole[*i][*j][kn].id == -1)      continue;
       else{(*k) = kn; break;}
       }
    if (*k != -1)border(&Pole[*i][*j][*k]);
    delay(300);  //мне кажется идеальный delay
+   return false;
 }
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
@@ -194,7 +195,7 @@ void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
 bool is_season(int tile1, int tile2)  // проверка сезонная ли фишка
 {
    if(tile1 >= 34 && tile2 >= 34)  
-      return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);
+      return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);    //подправить ??
    else return false;
 }
 
@@ -205,7 +206,7 @@ bool is_avalible(TILE* tile1)   //доступна ли фишка
       return false;
 }
    
-void click(int *i, int *j)      // определение какую фишку выбрал пользователь
+bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
 {
    int x, y;    // получение координат
    while(mousebuttons()==1);
@@ -216,13 +217,14 @@ void click(int *i, int *j)      // определение какую фишку выбрал пользователь
    }
    while(mousebuttons()==1);   //поиск какая фишка в массиве
    
-   if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     begin();}      //меню      1
+   if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     return true;}      //меню      1
    if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
 
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
    *j = ceil((y - begOfY) / tileH);
+   return false;
 }
 
 void acc_avl()  //пересчет доступных пар фишек
@@ -294,6 +296,10 @@ void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffer
 void find_tiles()       // нахождение фишек если пользователь их не видит
 {
    border(&founds.first);        border(&founds.second);
+   TILE temp;   temp.id = -1;
+   temp.x = 800;        temp.y = 600;
+   founds.first = temp;
+   founds.second = temp;
 }
 
 void stopwatch()        // реализация секундомера
@@ -331,7 +337,7 @@ void printSW()  // вывод секундомера
 
 void turn_SW(){thread SW(stopwatch);    SW.detach();}   //включение секундомера в другом потоке
 
-void end()      //окно при закончившихся доступных фишек
+bool end()      //окно при закончившихся доступных фишек
 {
    button but[3];
    char s[25];
@@ -368,11 +374,11 @@ void end()      //окно при закончившихся доступных фишек
             }
    }while(!flag);
    
-   if(st == 2)  {threadAcc = true;   mix_at_end();}
-   else begin();        // 2
+   if(st == 2)  {threadAcc = true;   mix_at_end();      return false;}
+   else return true;     // 2
 }
 
-void victory()  // окно победы с выходом в главное меню
+bool victory()  // окно победы с выходом в главное меню
 {
    setcolor(BEIGE);     //установка цвета для текста
    char res[30];
@@ -387,5 +393,5 @@ void victory()  // окно победы с выходом в главное меню
    setACPage();
    getch();
    clearviewport();
-   begin(); 
+   return true;
 }
