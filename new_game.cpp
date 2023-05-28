@@ -31,8 +31,9 @@ int hours, minutes, seconds;        //время прохождения
 button lose, win, gMenu, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
 thread SW;      //обьявление потока для секундомера
-bool threadAcc; //для включение/выключение таймера
+bool threadAcc, pereB, vicB; //для включение/выключение таймера
 extern bool contGame;
+
 
 
 void new_game(){        //отрисовка массива и движок игры
@@ -152,8 +153,8 @@ void core_game()        // основной процесс игры
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
-         if (CON_TILES == 0)       if(victory())        break;   //условия для проигрыша или выигрыша
-         else if (pairAVL == 0)    {bool f = end();    if(f) break;}
+         if (CON_TILES == 0)       {victory();  if(vicB)       {vicB = false; break; }}   //условия для проигрыша или выигрыша
+         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
          
          if(definition_XY(&i1, &j1, &k1))       break;
          
@@ -167,7 +168,9 @@ void core_game()        // основной процесс игры
             acc_avl(); //пересчет доступных пар фишек
          }
          draw_pole();   //отрисовка поля
-      }
+         
+         
+         }
    
 }
 
@@ -289,7 +292,6 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
-   //setcolor(BR);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
 }
 
@@ -320,7 +322,6 @@ void stopwatch()        // реализация секундомера
          s0 = s1;
          seconds++;
          printSW();
-         //printf("Timer - %02d:%02d:%02d\n", hours, minutes, seconds);
          if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
          if (seconds == 59){ minutes++;   seconds = -1; }
          
@@ -337,7 +338,7 @@ void printSW()  // вывод секундомера
 
 void turn_SW(){thread SW(stopwatch);    SW.detach();}   //включение секундомера в другом потоке
 
-bool end()      //окно при закончившихся доступных фишек
+void end()      //окно при закончившихся доступных фишек
 {
    button but[3];
    char s[25];
@@ -374,11 +375,11 @@ bool end()      //окно при закончившихся доступных фишек
             }
    }while(!flag);
    
-   if(st == 2)  {threadAcc = true;   mix_at_end();      return false;}
-   else return true;     // 2
+   if(st == 2)  {threadAcc = true;   mix_at_end();      pereB = false;}
+   else        pereB = true;     // 2
 }
 
-bool victory()  // окно победы с выходом в главное меню
+void victory()  // окно победы с выходом в главное меню
 {
    setcolor(BEIGE);     //установка цвета для текста
    char res[30];
@@ -393,5 +394,5 @@ bool victory()  // окно победы с выходом в главное меню
    setACPage();
    getch();
    clearviewport();
-   return true;
+   vicB = true;
 }

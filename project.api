@@ -32,7 +32,7 @@ definition_XY(int* i, int* y, int* k) -> bool #<new_game.h>
 delete_pair(TILE* tile1, TILE* tile2) -> void #<new_game.h>
 draw_pole() -> void #<new_game.h>
 drawmenu() -> void #<menu.h>
-end() -> bool #<new_game.h>
+end() -> void #<new_game.h>
 false : const intbuttonH=90;const int mid_width=width/2, mid_height=height/2;int currentPage=-1;bool contGame= #<menu.cpp>
 findTiles : button #<new_game.cpp>
 find_tiles() -> void #<new_game.h>
@@ -57,6 +57,7 @@ minutes : int #<new_game.cpp>
 mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
+pereB : bool #<new_game.cpp>
 printSW() -> void #<new_game.h>
 rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
@@ -69,7 +70,8 @@ stopwatch() -> void #<new_game.h>
 threadAcc : bool #<new_game.cpp>
 tileW : const int #<new_game.cpp>
 turn_SW() -> void #<new_game.h>
-victory() -> bool #<new_game.h>
+vicB : bool #<new_game.cpp>
+victory() -> void #<new_game.h>
 width #<menu.h>
 win : button #<new_game.cpp>
 	TILE::name : char[] #<new_game.h>
