@@ -153,8 +153,8 @@ void core_game()        // основной процесс игры
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
-         if (CON_TILES == 0)       {victory();  if(vicB)       {vicB = false; break; }}   //условия для проигрыша или выигрыша
-         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+        // if (CON_TILES == 0)       {victory();  if(vicB)       {vicB = false; break; }}   //условия для проигрыша или выигрыша
+        // if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
          
          if(definition_XY(&i1, &j1, &k1))       break;
          
@@ -167,7 +167,11 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             acc_avl(); //пересчет доступных пар фишек
          }
+         if (CON_TILES == 0)       {victory();}   //условия для проигрыша или выигрыша
+         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+         
          draw_pole();   //отрисовка поля
+         
          
          
          }
