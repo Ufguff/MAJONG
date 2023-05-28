@@ -165,14 +165,14 @@ void core_game()        // основной процесс игры
          //если фишки одинаковы или они одинаковые как сезонные
          if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
-            acc_avl(); //пересчет доступных пар фишек
+            if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
          }
-         if (CON_TILES == 0)       {victory();}   //условия для проигрыша или выигрыша
+         //CON_TILES = 0;
+         if (CON_TILES == 0)       {victory(); if(vicB) {vicB = false; break; }}   //условия для проигрыша или выигрыша
+         // время -1 секунда // вылет программы // 1 пара осталось и засчитало победу
          if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
          
          draw_pole();   //отрисовка поля
-         
-         
          
          }
    

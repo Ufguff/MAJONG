@@ -89,6 +89,7 @@ void init_menu(){
 
 void drawmenu() // отрисовка лого и кнопок меню
 {
+   setbkcolor(ELVOLT);  //      установка цвета фона
    setVSPage();
    clearviewport();
    putimage(logo.x, logo.y, logo.bmp, COPY_PUT);
@@ -101,7 +102,7 @@ void drawmenu() // отрисовка лого и кнопок меню
 int menu(int st)
 {
    int flag = 0, x, y;
-   setbkcolor(ELVOLT);  //      установка цвета фона
+   
    drawmenu();  //отрисовка меню
    do {
       while(mousebuttons() != 1){       //нахождение координат куда нажал пользователь а также определение статуса
