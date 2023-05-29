@@ -153,9 +153,6 @@ void core_game()        // основной процесс игры
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
-        // if (CON_TILES == 0)       {victory();  if(vicB)       {vicB = false; break; }}   //условия для проигрыша или выигрыша
-        // if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
-         
          if(definition_XY(&i1, &j1, &k1))       break;
          
          if(definition_XY(&i2, &j2, &k2))       break;
@@ -167,12 +164,13 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
          }
-         //CON_TILES = 0;
-         if (CON_TILES == 0)       {victory(); if(vicB) {vicB = false; break; }}   //условия для проигрыша или выигрыша
-         // время -1 секунда // вылет программы // 1 пара осталось и засчитало победу
+        //CON_TILES = 0;
+         //if (CON_TILES == 0)       {victory(); if(vicB) {vicB = false; break; }}   //условия для проигрыша или выигрыша
+         // время -1 секунда // вылет программы 
          if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
          
-         draw_pole();   //отрисовка поля
+         if(CON_TILES != 0)     draw_pole();   //отрисовка поля
+         else {victory();       begin();}
          
          }
    
@@ -397,6 +395,4 @@ void victory()  // окно победы с выходом в главное меню
    outtextxy(370, 300, res);    // вывод времени прохождения
    setACPage();
    getch();
-   clearviewport();
-   vicB = true;
 }
