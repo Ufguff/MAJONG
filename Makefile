@@ -58,7 +58,7 @@ endif
 CCCS = -finput-charset=utf-8 -fexec-charset=windows-1251
 CCCW = -finput-charset=windows-1251 -fexec-charset=windows-1251
 HS = $(sort $(CHEADERS) $(GRMHEADER) $(CAIOGENERH) $(SMGENERH))
-INIT="C:\Users\Ufguff\Desktop\MinIDE\SciTE/../lib/initansicp.o"
+INIT="C:\MinIDE\SciTE/../lib/initansicp.o"
 
 .PHONY : all clean
 

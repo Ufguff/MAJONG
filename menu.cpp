@@ -65,7 +65,7 @@ void continue_game()
             {flag = 1; st = i+1;  break; }
             }
    }while(!flag);
-   
+   while(mousebuttons()==1);
    if(st == 2)  {contGame = true;}
    else contGame = false;
    new_game();
@@ -127,7 +127,6 @@ void rules_about(int st)
    setACPage();
    while(kbhit())       getch();
    getch();     //ожидание нажатия кнопки
-   //begin();     // выход в меню
 }
 
 void close_game(){  closegraph();   }       // закрытие графического окна

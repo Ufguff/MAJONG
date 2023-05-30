@@ -27,12 +27,13 @@ auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2) - 50; //начальная координата по X для вывода всей пирамиды
 int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата по Y для вывода всей пирамиды
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
-int hours, minutes, seconds;        //время прохождения
+int minutes, seconds;        //время прохождения
 button lose, win, gMenu, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
 thread SW;      //обьявление потока для секундомера
-bool threadAcc; //для включение/выключение таймера
+bool threadAcc, pereB, vicB; //для включение/выключение таймера
 extern bool contGame;
+
 
 
 void new_game(){        //отрисовка массива и движок игры
@@ -40,7 +41,7 @@ void new_game(){        //отрисовка массива и движок игры
    
    if (!contGame){
    CON_TILES = 144;
-   hours = 0; minutes = 0; seconds = 0;
+   minutes = 0; seconds = 0;
    
    init_game();
    }
@@ -149,12 +150,10 @@ void init_game(){       // инициализация библиотеки и раскладки
 void core_game()        // основной процесс игры
 {
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
+   int count = 0;
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
-         if (CON_TILES == 0)       if(victory())        break;   //условия для проигрыша или выигрыша
-         else if (pairAVL == 0)    {bool f = end();    if(f) break;}
-         
          if(definition_XY(&i1, &j1, &k1))       break;
          
          if(definition_XY(&i2, &j2, &k2))       break;
@@ -164,10 +163,18 @@ void core_game()        // основной процесс игры
          //если фишки одинаковы или они одинаковые как сезонные
          if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
-            acc_avl(); //пересчет доступных пар фишек
+            if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
          }
-         draw_pole();   //отрисовка поля
-      }
+        //if (count == 3) 
+           CON_TILES = 0;
+         //if (CON_TILES == 0)       {victory(); if(vicB) {vicB = false; break; }}   //условия для проигрыша или выигрыша
+         // время -1 секунда // вылет программы 
+         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+         
+         if(CON_TILES != 0)     draw_pole();   //отрисовка поля
+         else {victory();       break;}
+         count++;
+         }
    
 }
 
@@ -289,11 +296,38 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
-   //setcolor(BR);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
 }
 
 void find_tiles()       // нахождение фишек если пользователь их не видит
 {
    border(&founds.first);        border(&founds.second);
-   TILE temp;   _abracadabra_cast(temp);
+   TILE temp;   temp.id = -1;
+   temp.x = 800;        temp.y = 600;
+   founds.first = temp;
+   founds.second = temp;
+}
+
+void stopwatch()        // реализация секундомера
+{
+   clock_t t0 = clock();
+   //seconds = 0, minutes = 0;
+   int temp = 0;
+   while(threadAcc){
+      clock_t t1 = clock();
+      temp = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
+      seconds = temp % 60;
+      minutes = temp / 60;
+      printSW();
+   }
+}
+
+void printSW()  // вывод секундомера
+{
+   char s[20];
+   sprintf(s, "Время: %02d:%02d", minutes, seconds);
+   outtextxy(210 , 30, s);
+   cout << s << endl;
+}
+
+void turn_SW(){thread SW(stopwatch);    _abracadabra_cast(SW);
