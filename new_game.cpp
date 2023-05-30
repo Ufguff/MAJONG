@@ -27,13 +27,13 @@ auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2) - 50; //начальная координата по X для вывода всей пирамиды
 int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата по Y для вывода всей пирамиды
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
-int minutes, seconds;        //время прохождения
 button lose, win, gMenu, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
 thread SW;      //обьявление потока для секундомера
-bool threadAcc, pereB, vicB; //для включение/выключение таймера
+bool pereB; //для включение/выключение таймера
 extern bool contGame;
 clock_t t0;
+int baseTime = 0;
 
 
 
@@ -42,12 +42,9 @@ void new_game(){        //отрисовка массива и движок игры
    
    if (!contGame){
    CON_TILES = 144;
-   minutes = 0; seconds = 0;
-   
+   baseTime = 0;
    init_game();
    }
-   
-   threadAcc = true;
    draw_pole(); 
    core_game();
 }
@@ -109,7 +106,6 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    outtextxy(350, 30, output);
    sprintf(output, "Осталось ходов: %d", pairAVL);      // вывод оставшихся ходов
    outtextxy(560, 30, output); 
-   printSW();   // вывод секундомера
    
    for(int k = 0; k < he; k++)  // выведение картинок фишек
          for(int j = 0; j < wi; j++)
@@ -131,7 +127,6 @@ void init_game(){       // инициализация библиотеки и раскладки
    win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
    gMenu.bmp = loadBMP(".//MENU_STUFF/gMenu.bmp");
    findTiles.bmp = loadBMP(".//MENU_STUFF/find.bmp");
-   //exitOn.bmp = imageresize(exitOn.bmp, 180, 60, COLORONCOLOR_RESIZE);
    for (int i = 0; i < 42; i++) { // создание библиотеки фишек
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
@@ -150,15 +145,17 @@ void init_game(){       // инициализация библиотеки и раскладки
 
 void core_game()        // основной процесс игры
 {
+   
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
-   int count = 0;
-   t0 = clock();
+   if (!contGame)          {t0 = clock();       outtextxy(210 , 30, "Время: 00:00");    }
       while(1)
       {
+         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+         
          if(definition_XY(&i1, &j1, &k1))       break;
          
          if(definition_XY(&i2, &j2, &k2))       break;
-         delay(300);  //мне кажется идеальный delay     //////
+         delay(300);  //мне кажется идеальный delay     
          if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
          //если фишки одинаковы или они одинаковые как сезонные
@@ -166,15 +163,8 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
          }
-        //if (count == 3) 
-           CON_TILES = 0;
-         //if (CON_TILES == 0)       {victory(); if(vicB) {vicB = false; break; }}   //условия для проигрыша или выигрыша
-         // время -1 секунда // вылет программы 
-         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
-         
          if(CON_TILES != 0)     draw_pole();   //отрисовка поля
          else {victory();       break;}
-         count++;
          }
    
 }
@@ -188,7 +178,6 @@ bool definition_XY(int *i, int *j, int *k)      // определение координат в масси
       else{(*k) = kn; break;}
       }
    if (*k != -1)border(&Pole[*i][*j][*k]);
-   //delay(300);  //мне кажется идеальный delay
    return false;
 }
 
@@ -220,20 +209,20 @@ bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
    int dt = 0;
    int x, y;    // получение координат
    do{
-      while(mousebuttons() != 1){
+      while(mousebuttons() != 1){       //подсчет и вывод секундомера
          clock_t t1 = clock();
-         int temp = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
-          if (dt != temp)       {
-      sprintf(s, "Время: %02d:%02d", temp / 60, temp % 60);
-      outtextxy(210 , 30, s);
-             dt = temp;
-          }
-         x = mousex();
-         y = mousey();
-      }
+         baseTime = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
+          if (dt != baseTime)       {
+            sprintf(s, "Время: %02d:%02d", baseTime / 60, baseTime % 60);
+            outtextxy(210 , 30, s);
+            dt = baseTime;
+         }
+               x = mousex();
+               y = mousey();
+            }
       while(mousebuttons()==1);   //поиск какая фишка в массиве
       
-      if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     return true;}      //меню      1
+      if (x >= 10 && x <= 100 && y >= 10 && y <= 55){contGame = true;     return true;}      // выход в меню
       if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
 
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
@@ -259,7 +248,7 @@ void acc_avl()  //пересчет доступных пар фишек
    
    for(int i = 0; i < for_find.size() - 1; i++) // нахождение 1 пары фишек и занесения в pair для функции find_tiles()
       for(int j = i + 1; j < for_find.size(); j++)
-         if (for_find[i].id == for_find[j].id)  {founds = make_pair(for_find[i], for_find[j]);   break;}
+         if (for_find[i].id == for_find[j].id || is_season(for_find[i].id, for_find[j].id))  {founds = make_pair(for_find[i], for_find[j]);   break;}
          
    while((i + 1) < avl_tile.size())     //подсчет доступных пар
    {
@@ -300,7 +289,6 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
                
    acc_avl();     
    draw_pole();
-   turn_SW();   //включение секундомера в другом потоке
 }
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
@@ -317,45 +305,10 @@ void find_tiles()       // нахождение фишек если пользователь их не видит
    founds.second = temp;
 }
 
-void stopwatch()        // реализация секундомера
-{
-   time_t start;
-   struct tm *now;
-   int s1, s0 = 0;
-   start = time(NULL);
-   now = localtime(&start);
-   s0 = now->tm_sec;
-   while(threadAcc)
-   {
-      setcolor(WHITE);
-      start = time(NULL);
-      now = localtime(&start);
-      s1 = now->tm_sec;
-      if (s1 != s0){
-         s0 = s1;
-         seconds++;
-        // if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
-         if (seconds == 59){ minutes++;   seconds = -1; }
-         
-      }
-   }
-}
-
-void printSW()  // вывод секундомера
-{
-   char s[20];
-   sprintf(s, "Время: %02d:%02d", minutes, seconds);
-   outtextxy(210 , 30, s);
-   cout << s << endl;
-}
-
-void turn_SW(){thread SW(stopwatch);    SW.detach();}   //включение секундомера в другом потоке
-
 void end()      //окно при закончившихся доступных фишек
 {
    button but[3];
    char s[25];
-   threadAcc = false;   // прекращение работы таймера
    
    setVSPage();
    clearviewport();
@@ -388,17 +341,17 @@ void end()      //окно при закончившихся доступных фишек
             }
    }while(!flag);
    
-   if(st == 2)  {threadAcc = true;   mix_at_end();      pereB = false;}
+   if(st == 2)  {mix_at_end();      pereB = false;}
    else        pereB = true;     // 2
 }
 
 void victory()  // окно победы с выходом в главное меню
 {
-   char res[30];
+   int minutes = baseTime / 60, seconds = baseTime % 60;
+   char res[60];
    setVSPage();
    clearviewport();
    while(kbhit())       getch();
-   threadAcc = false;   // прекращение работы таймера
    putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
    sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);
    setcolor(BEIGE);

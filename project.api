@@ -15,6 +15,7 @@ SW : thread #<new_game.cpp>
 TILE _type_ #<new_game.h>
 acc_avl() -> void #<new_game.h>
 avl_tile : vector #<new_game.cpp>
+baseTime : int #<new_game.cpp>
 begOfX : int #<new_game.cpp>
 begOfY : int #<new_game.cpp>
 begin() -> void #<menu.h>
@@ -52,25 +53,18 @@ lose : button #<new_game.cpp>
 main() -> int #<main.cpp>
 maj_init() -> void #<new_game.h>
 menu(int st) -> int #<menu.h>
-minutes : int #<new_game.cpp>
 mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
 pereB : bool #<new_game.cpp>
-printSW() -> void #<new_game.h>
 rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
 rulAbt : button #<menu.cpp>
 rules_about(int st) -> void #<menu.h>
-seconds : int #<new_game.cpp>
 setACPage() -> void #<menu.h>
 setVSPage() -> void #<menu.h>
-stopwatch() -> void #<new_game.h>
 t0 : clock_t #<new_game.cpp>
-threadAcc : bool #<new_game.cpp>
 tileW : const int #<new_game.cpp>
-turn_SW() -> void #<new_game.h>
-vicB : bool #<new_game.cpp>
 victory() -> void #<new_game.h>
 width #<menu.h>
 win : button #<new_game.cpp>
