@@ -38,14 +38,11 @@ extern bool contGame;
 
 void new_game(){        //отрисовка массива и движок игры
    settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 2);
-   
    if (!contGame){
-   CON_TILES = 144;
-   minutes = 0; seconds = 0;
-   
-   init_game();
+      CON_TILES = 144;
+      minutes = 0; seconds = 0;
+      init_game();
    }
-   
    threadAcc = true;
    draw_pole(); 
    core_game();
@@ -139,8 +136,7 @@ void init_game(){       // инициализация библиотеки и раскладки
 	}
         
    for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }       //создание раскладки
-
-
+   
    shuffle(layout.begin(), layout.end(), rng);        //реализация рандомизации(перемешивание раскладки)
    
    maj_init();
@@ -157,7 +153,7 @@ void core_game()        // основной процесс игры
          if(definition_XY(&i1, &j1, &k1))       break;
          
          if(definition_XY(&i2, &j2, &k2))       break;
-         delay(300);  //мне кажется идеальный delay
+         delay(300);
          if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
          //если фишки одинаковы или они одинаковые как сезонные
@@ -165,11 +161,9 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
          }
-        // CON_TILES = 0;         
          
          if(CON_TILES != 0)     draw_pole();   //отрисовка поля
          else {victory();       break;}
-         
          }
    
 }
@@ -321,9 +315,7 @@ void stopwatch()        // реализация секундомера
          s0 = s1;
          seconds++;
          printSW();
-         if (minutes == 59 && seconds == 59){ hours++;  minutes = 0;  seconds = -1;}
          if (seconds == 59){ minutes++;   seconds = -1; }
-         
       }
    }
 }
@@ -342,7 +334,6 @@ void end()      //окно при закончившихся доступных фишек
    button but[3];
    char s[25];
    threadAcc = false;   // прекращение работы таймера
-   
    setVSPage();
    clearviewport();
    for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
@@ -380,15 +371,14 @@ void end()      //окно при закончившихся доступных фишек
 
 void victory()  // окно победы с выходом в главное меню
 {
-   setcolor(BEIGE);     //установка цвета для текста
    char res[100];
+   threadAcc = false;   // прекращение работы таймера
+   setcolor(BEIGE);     //установка цвета для текста
    setVSPage();
    clearviewport();
    while(kbhit())       getch();
-   threadAcc = false;   // прекращение работы таймера
    putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
    sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);
-   setcolor(BEIGE);
    outtextxy(370, 300, res);    // вывод времени прохождения
    setACPage();
    getch();
