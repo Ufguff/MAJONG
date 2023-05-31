@@ -27,11 +27,11 @@ auto rng = default_random_engine {rd()};
 int begOfX = floor((width - (tileW * le)) / 2) - 50; //начальная координата по X для вывода всей пирамиды
 int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата по Y для вывода всей пирамиды
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
-int hours, minutes, seconds;        //время прохождения
+int minutes, seconds;        //время прохождения
 button lose, win, gMenu, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
 thread SW;      //обьявление потока для секундомера
-bool threadAcc, pereB, vicB; //для включение/выключение таймера
+bool threadAcc, pereB; //для включение/выключение таймера
 extern bool contGame;
 
 
@@ -41,7 +41,7 @@ void new_game(){        //отрисовка массива и движок игры
    
    if (!contGame){
    CON_TILES = 144;
-   hours = 0; minutes = 0; seconds = 0;
+   minutes = 0; seconds = 0;
    
    init_game();
    }
@@ -130,7 +130,6 @@ void init_game(){       // инициализация библиотеки и раскладки
    win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
    gMenu.bmp = loadBMP(".//MENU_STUFF/gMenu.bmp");
    findTiles.bmp = loadBMP(".//MENU_STUFF/find.bmp");
-   //exitOn.bmp = imageresize(exitOn.bmp, 180, 60, COLORONCOLOR_RESIZE);
    for (int i = 0; i < 42; i++) { // создание библиотеки фишек
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
@@ -153,10 +152,12 @@ void core_game()        // основной процесс игры
    turn_SW();   //включение секундомера в другом потоке
       while(1)
       {
+         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+         
          if(definition_XY(&i1, &j1, &k1))       break;
          
          if(definition_XY(&i2, &j2, &k2))       break;
-         
+         delay(300);  //мне кажется идеальный delay
          if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
          //если фишки одинаковы или они одинаковые как сезонные
@@ -164,13 +165,10 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
          }
-        //CON_TILES = 0;
-         //if (CON_TILES == 0)       {victory(); if(vicB) {vicB = false; break; }}   //условия для проигрыша или выигрыша
-         // время -1 секунда // вылет программы 
-         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+        // CON_TILES = 0;         
          
          if(CON_TILES != 0)     draw_pole();   //отрисовка поля
-         else {victory();       begin();}
+         else {victory();       break;}
          
          }
    
@@ -185,7 +183,6 @@ bool definition_XY(int *i, int *j, int *k)      // определение координат в масси
       else{(*k) = kn; break;}
       }
    if (*k != -1)border(&Pole[*i][*j][*k]);
-   delay(300);  //мне кажется идеальный delay
    return false;
 }
 
@@ -216,14 +213,14 @@ bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
    int x, y;    // получение координат
    while(mousebuttons()==1);
    do{
-   while(mousebuttons() != 1){
-      x = mousex();
-      y = mousey();
-   }
-   while(mousebuttons()==1);   //поиск какая фишка в массиве
+      while(mousebuttons() != 1){
+         x = mousex();
+         y = mousey();
+      }
+      while(mousebuttons()==1);   //поиск какая фишка в массиве
    
-   if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     return true;}      //меню      1
-   if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
+      if (x >= 10 && x <= 100 && y >= 10 && y <= 55){threadAcc = false;    contGame = true;     return true;}      //меню      1
+      if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
 
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
@@ -248,7 +245,7 @@ void acc_avl()  //пересчет доступных пар фишек
    
    for(int i = 0; i < for_find.size() - 1; i++) // нахождение 1 пары фишек и занесения в pair для функции find_tiles()
       for(int j = i + 1; j < for_find.size(); j++)
-         if (for_find[i].id == for_find[j].id)  {founds = make_pair(for_find[i], for_find[j]);   break;}
+         if (for_find[i].id == for_find[j].id || is_season(for_find[i].id, for_find[j].id))  {founds = make_pair(for_find[i], for_find[j]);   break;}
          
    while((i + 1) < avl_tile.size())     //подсчет доступных пар
    {
@@ -384,7 +381,7 @@ void end()      //окно при закончившихся доступных фишек
 void victory()  // окно победы с выходом в главное меню
 {
    setcolor(BEIGE);     //установка цвета для текста
-   char res[30];
+   char res[100];
    setVSPage();
    clearviewport();
    while(kbhit())       getch();

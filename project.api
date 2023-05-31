@@ -40,7 +40,6 @@ for_find : vector #<new_game.cpp>
 founds : pair #<new_game.cpp>
 gMenu : button #<new_game.cpp>
 height #<menu.h>
-hours : int #<new_game.cpp>
 init_game() -> void #<new_game.h>
 init_menu() -> void #<menu.h>
 is_avalible(TILE* tile1) -> bool #<new_game.h>
@@ -70,7 +69,6 @@ stopwatch() -> void #<new_game.h>
 threadAcc : bool #<new_game.cpp>
 tileW : const int #<new_game.cpp>
 turn_SW() -> void #<new_game.h>
-vicB : bool #<new_game.cpp>
 victory() -> void #<new_game.h>
 width #<menu.h>
 win : button #<new_game.cpp>
