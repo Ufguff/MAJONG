@@ -33,7 +33,7 @@ thread SW;      //обьявление потока для секундомера
 bool pereB; //для включение/выключение таймера
 extern bool contGame;
 clock_t t0;
-int baseTime = 0;
+int baseTime = 0, seconds;
 
 
 
@@ -42,7 +42,7 @@ void new_game(){        //отрисовка массива и движок игры
    
    if (!contGame){
    CON_TILES = 144;
-   baseTime = 0;
+   seconds = 0;
    init_game();
    }
    draw_pole(); 
@@ -145,9 +145,13 @@ void init_game(){       // инициализация библиотеки и раскладки
 
 void core_game()        // основной процесс игры
 {
-   
+   t0 = clock();       
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
-   if (!contGame)          {t0 = clock();       outtextxy(210 , 30, "Время: 00:00");    }
+   if (!contGame)          {
+      char s[20];
+      sprintf(s, "Время: %02d:%02d", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
+      outtextxy(210 , 30, s);
+   }
       while(1)
       {
          if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
@@ -155,13 +159,13 @@ void core_game()        // основной процесс игры
          if(definition_XY(&i1, &j1, &k1))       break;
          
          if(definition_XY(&i2, &j2, &k2))       break;
-         delay(300);  //мне кажется идеальный delay     
+         delay(300);   
          if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
          //если фишки одинаковы или они одинаковые как сезонные
          if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
-            if(CON_TILES != 0) acc_avl(); //пересчет доступных пар фишек
+            acc_avl(); //пересчет доступных пар фишек
          }
          if(CON_TILES != 0)     draw_pole();   //отрисовка поля
          else {victory();       break;}
@@ -205,24 +209,20 @@ bool is_avalible(TILE* tile1)   //доступна ли фишка
    
 bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
 {
-   char s[20];
-   int dt = 0;
    int x, y;    // получение координат
    do{
       while(mousebuttons() != 1){       //подсчет и вывод секундомера
-         clock_t t1 = clock();
-         baseTime = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
-          if (dt != baseTime)       {
-            sprintf(s, "Время: %02d:%02d", baseTime / 60, baseTime % 60);
-            outtextxy(210 , 30, s);
-            dt = baseTime;
+         if (mousebuttons() != 1)       stopwatch();
+         x = mousex();
+         y = mousey();
          }
-               x = mousex();
-               y = mousey();
-            }
       while(mousebuttons()==1);   //поиск какая фишка в массиве
       
-      if (x >= 10 && x <= 100 && y >= 10 && y <= 55){contGame = true;     return true;}      // выход в меню
+      if (x >= 10 && x <= 100 && y >= 10 && y <= 55){
+         contGame = true;
+         seconds += baseTime % 60;
+         return true;
+         }      // выход в меню
       if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
 
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
@@ -305,11 +305,25 @@ void find_tiles()       // нахождение фишек если пользователь их не видит
    founds.second = temp;
 }
 
+void stopwatch()
+{
+   setVSPage();
+   char s[20];
+   int dt = 0;
+   clock_t t1 = clock();
+   baseTime = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
+      if (dt != baseTime)       {
+      sprintf(s, "Время: %02d:%02d", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
+      outtextxy(210 , 30, s);
+      setACPage();
+      dt = baseTime;
+   }
+}
+
 void end()      //окно при закончившихся доступных фишек
 {
    button but[3];
    char s[25];
-   
    setVSPage();
    clearviewport();
    for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
@@ -347,13 +361,12 @@ void end()      //окно при закончившихся доступных фишек
 
 void victory()  // окно победы с выходом в главное меню
 {
-   int minutes = baseTime / 60, seconds = baseTime % 60;
-   char res[60];
+   char res[100];
    setVSPage();
    clearviewport();
    while(kbhit())       getch();
    putimage(0, 0, win.bmp, COPY_PUT);   //выставление окна выигрыша
-   sprintf(res, "Ваше время прохождения: %d минут %d секунд!", minutes, seconds);
+   sprintf(res, "Ваше время прохождения: %d минут %d секунд!", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
    setcolor(BEIGE);
    outtextxy(370, 300, res);    // вывод времени прохождения
    setACPage();

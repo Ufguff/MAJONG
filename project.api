@@ -61,8 +61,10 @@ rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
 rulAbt : button #<menu.cpp>
 rules_about(int st) -> void #<menu.h>
+seconds : int #<new_game.cpp>
 setACPage() -> void #<menu.h>
 setVSPage() -> void #<menu.h>
+stopwatch() -> void #<new_game.h>
 t0 : clock_t #<new_game.cpp>
 tileW : const int #<new_game.cpp>
 victory() -> void #<new_game.h>
