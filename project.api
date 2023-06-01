@@ -57,6 +57,7 @@ mix_at_end() -> void #<new_game.h>
 new_game() -> void #<new_game.h>
 pairAVL : int #<new_game.cpp>
 pereB : bool #<new_game.cpp>
+printSW() -> void #<new_game.h>
 rd : auto #<new_game.cpp>
 rng : auto #<new_game.cpp>
 rulAbt : button #<menu.cpp>

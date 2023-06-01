@@ -26,7 +26,8 @@ bool is_season(int tile1, int tile2);   //  проверка сезонная ли фишка
 void acc_avl(); //пересчет доступных пар фишек
 void mix_at_end();      // перемешивание при отсутсвующих фишках
 void border(TILE *tile);        // границы при нажатии на фишку(не работает с swapbuffers())
-void stopwatch();
+void stopwatch();       // реализация секундомера
+void printSW(); // вывод секундомера
 void end();     //окно при закончившихся доступных фишек
 void victory(); // окно победы с выходом в главное меню
 #endif

@@ -33,7 +33,7 @@ thread SW;      //обьявление потока для секундомера
 bool pereB; //для включение/выключение таймера
 extern bool contGame;
 clock_t t0;
-int baseTime = 0, seconds;
+int baseTime, seconds;
 
 
 
@@ -42,6 +42,7 @@ void new_game(){        //отрисовка массива и движок игры
    
    if (!contGame){
    CON_TILES = 144;
+   baseTime = 0;
    seconds = 0;
    init_game();
    }
@@ -98,14 +99,16 @@ void maj_init() //предварительное создание поля и его заполнение
 }
    
 void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
+   char output[50];
    setVSPage();
    clearviewport();
    setcolor(WHITE);
-   char output[20];
    sprintf(output, "Осталось фишек: %d", CON_TILES);    // вывод оставшихся фишек
    outtextxy(350, 30, output);
    sprintf(output, "Осталось ходов: %d", pairAVL);      // вывод оставшихся ходов
    outtextxy(560, 30, output); 
+   sprintf(output, "Время: %02d:%02d", (seconds) / 60, (seconds) % 60); // вывод секундомера изменении окна
+   outtextxy(210 , 30, output);
    
    for(int k = 0; k < he; k++)  // выведение картинок фишек
          for(int j = 0; j < wi; j++)
@@ -116,6 +119,7 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
                   }
    putimage(10, 10, gMenu.bmp);
    putimage(700, 300, findTiles.bmp);
+   
    setACPage();
    }
 
@@ -147,11 +151,6 @@ void core_game()        // основной процесс игры
 {
    t0 = clock();       
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
-   if (!contGame)          {
-      char s[20];
-      sprintf(s, "Время: %02d:%02d", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
-      outtextxy(210 , 30, s);
-   }
       while(1)
       {
          if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
@@ -167,6 +166,8 @@ void core_game()        // основной процесс игры
             delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
             acc_avl(); //пересчет доступных пар фишек
          }
+         
+         
          if(CON_TILES != 0)     draw_pole();   //отрисовка поля
          else {victory();       break;}
          }
@@ -304,18 +305,19 @@ void find_tiles()       // нахождение фишек если пользователь их не видит
    founds.first = temp;
    founds.second = temp;
 }
-
-void stopwatch()
+void printSW()  // вывод секундомера
 {
-   setVSPage();
-   char s[20];
+   char s[50];
+   sprintf(s, "Время: %02d:%02d", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
+   outtextxy(210 , 30, s);
+}
+void stopwatch()        // реализация секундомера
+{
    int dt = 0;
    clock_t t1 = clock();
    baseTime = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
       if (dt != baseTime)       {
-      sprintf(s, "Время: %02d:%02d", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
-      outtextxy(210 , 30, s);
-      setACPage();
+      printSW();
       dt = baseTime;
    }
 }
