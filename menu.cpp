@@ -6,8 +6,7 @@ button but[4];  //обь€вление массива кнопок дл€ меню
 button logo;    // лого игры дл€ меню
 button rulAbt;      // кнопка дл€ выведени€ окна "ѕравила"/"ќ программе"
 
-const int buttonW = 280, buttonH = 90;  //размеры кнопок меню
-const int mid_width = width / 2, mid_height = height / 2;       
+const int buttonW = 280, buttonH = 90, mid_width = width / 2, mid_height = height / 2; //размеры кнопок меню   
 int currentPage = -1;    // дл€ новых окон и анимации
 bool contGame = false;
 
@@ -80,7 +79,6 @@ void init_menu(){
          but[i].bmp = loadBMP(file);
    }
    // тоже самое отдельно дл€ лого
-   //logo.dx = 150; logo.dy = 100;
    logo.x = 50; logo.y = 0;
    logo.bmp = loadBMP(".//MENU_STUFF/menu_majong.gif");
 }
@@ -102,7 +100,6 @@ void drawmenu() // отрисовка лого и кнопок меню
 int menu(int st)
 {
    int flag = 0, x, y;
-   
    drawmenu();  //отрисовка меню
    do {
       while(mousebuttons() != 1){       //нахождение координат куда нажал пользователь а также определение статуса

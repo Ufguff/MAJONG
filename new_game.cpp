@@ -3,10 +3,8 @@
 #include<random>
 #include <algorithm>
 #include <utility>
-#include <string>
 #include <cmath>
 #include <ctime>
-#include <thread>
 
 #include "menu.h"
 #include "new_game.h"
@@ -29,12 +27,10 @@ int begOfY = floor((height - (tileH * wi)) / 2) + 30;   //начальная координата п
 int pairAVL, CON_TILES; //количество доступных фишек, количество всех фишек
 button lose, win, gMenu, findTiles;       //окна для вывода проигрыша или выигрыше
 TILE library[42];    //библиотка для фишек
-thread SW;      //обьявление потока для секундомера
 bool pereB; //для включение/выключение таймера
 extern bool contGame;
 clock_t t0;
 int baseTime, seconds;
-
 
 
 void new_game(){        //отрисовка массива и движок игры
@@ -75,7 +71,6 @@ void maj_init() //предварительное создание поля и его заполнение
             Pole[i][j][k].id = 0;   
             break;
          }
-         
       }
       //присвоение каждой структуре его координаты в массиве, координаты на поле и адрес для размещения картинки
    for(int k = 0; k < he; k++)
@@ -95,7 +90,7 @@ void maj_init() //предварительное создание поля и его заполнение
                } 
          }
          
-         acc_avl();     //пересчет доступных пар фишек
+   acc_avl();     //пересчет доступных пар фишек
 }
    
 void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
@@ -119,7 +114,6 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
                   }
    putimage(10, 10, gMenu.bmp);
    putimage(700, 300, findTiles.bmp);
-   
    setACPage();
    }
 
@@ -137,13 +131,11 @@ void init_game(){       // инициализация библиотеки и раскладки
          else library[i].count = 1; 
          sprintf(library[i].name, ".//TILES/tile%d.bmp", i+1);    
          library[i].bmp = loadBMP(library[i].name); 
-	}
+   }
         
    for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }       //создание раскладки
-
-
-   shuffle(layout.begin(), layout.end(), rng);        //реализация рандомизации(перемешивание раскладки)
    
+   shuffle(layout.begin(), layout.end(), rng);        //реализация рандомизации(перемешивание раскладки)
    maj_init();
    }
 
@@ -151,27 +143,25 @@ void core_game()        // основной процесс игры
 {
    t0 = clock();       
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
-      while(1)
-      {
-         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+   while(1)
+   {
+      if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
          
-         if(definition_XY(&i1, &j1, &k1))       break;
+      if(definition_XY(&i1, &j1, &k1))       break;
          
-         if(definition_XY(&i2, &j2, &k2))       break;
-         delay(300);   
-         if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
+      if(definition_XY(&i2, &j2, &k2))       break;
+      delay(300); 
+      if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
          
-         //если фишки одинаковы или они одинаковые как сезонные
-         if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
-            delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
-            acc_avl(); //пересчет доступных пар фишек
-         }
-         
-         
-         if(CON_TILES != 0)     draw_pole();   //отрисовка поля
-         else {victory();       break;}
-         }
-   
+      //если фишки одинаковы или они одинаковые как сезонные
+      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
+         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
+         acc_avl(); //пересчет доступных пар фишек
+      }
+      
+      if(CON_TILES != 0)     draw_pole();   //отрисовка поля
+      else {victory();       break;}
+   }
 }
 
 bool definition_XY(int *i, int *j, int *k)      // определение координат в массиве
@@ -188,24 +178,23 @@ bool definition_XY(int *i, int *j, int *k)      // определение координат в масси
 
 void delete_pair(TILE *tile1, TILE *tile2)  //  удаление фишек
 {
-      TILE temp;   temp.id = -1;
-      *(tile1) = temp;
-      *(tile2) = temp;
-      CON_TILES -= 2;
+   TILE temp;   temp.id = -1;
+   *(tile1) = temp;
+   *(tile2) = temp;
+   CON_TILES -= 2;
 }
 
 bool is_season(int tile1, int tile2)  // проверка сезонная ли фишка
 {
-   if(tile1 >= 34 && tile2 >= 34)  
-      return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);    //подправить ??
-   else return false;
+   if(tile1 >= 34 && tile2 >= 34)  return ((tile1 + 4) == tile2 || (tile2 + 4) == tile1);
+   return false;
 }
 
 bool is_avalible(TILE* tile1)   //доступна ли фишка
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
    if (((Pole[i][j][k+1].id == -1) && (k + 1) <= he) && ((i+1) < 9 && Pole[i + 1][j][k].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k].id == -1) || i == 0 || i == (le - 1))     return true;
-      return false;
+   return false;
 }
    
 bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
@@ -225,7 +214,6 @@ bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
          return true;
          }      // выход в меню
       if (x >= 700 && x <= 750 && y >= 300 && y <= 350){find_tiles();}  // нахождение пар
-
    }while(!(begOfX <= x && x <= begOfX + (tileW * le)) || !(begOfY <= y && y <= begOfY + (tileH * wi)));
    if ((x < begOfX || x > begOfX + le*tileW) && (y < begOfY || y > begOfY + wi*tileH)) click(i, j);
    *i = ceil((x - begOfX) / tileW);
@@ -255,7 +243,7 @@ void acc_avl()  //пересчет доступных пар фишек
    {
       if (avl_tile[i] == avl_tile[i + 1] || is_season(avl_tile[i], avl_tile[i+1])){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
       else      i++;
-      }
+   }
    avl_tile.clear();    //отчистка массива от оставшихся фишек
    for_find.clear();
 }
@@ -316,9 +304,9 @@ void stopwatch()        // реализация секундомера
    int dt = 0;
    clock_t t1 = clock();
    baseTime = (int)((double)(t1 - t0) / CLOCKS_PER_SEC);
-      if (dt != baseTime)       {
-      printSW();
-      dt = baseTime;
+   if (dt != baseTime){
+   printSW();
+   dt = baseTime;
    }
 }
 
@@ -358,7 +346,7 @@ void end()      //окно при закончившихся доступных фишек
    }while(!flag);
    
    if(st == 2)  {mix_at_end();      pereB = false;}
-   else        pereB = true;     // 2
+   else        pereB = true;
 }
 
 void victory()  // окно победы с выходом в главное меню

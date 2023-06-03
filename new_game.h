@@ -2,20 +2,17 @@
 #define _GAME_
 #define AVOCADO COLOR(113, 136, 20)
 #define BEIGE COLOR(247, 224, 193)
-#define BR COLOR(136, 43, 20)
 
 typedef struct TILE {   //структура фишки
    char name[20];
    int id, count, x, y, i, j, k;        //id фишки, её количество в игре, координата по x и y, координаты фишки в массиве
    IMAGE * bmp;
    }Tile;
-
+// прототипы функций
 void new_game();        //отрисовка массива и движок игры
 void draw_pole();       //отрисовывает фишки на поле, а также сколько осталось и сколько пар доступно
 void init_game();       // инициализация библиотеки и раскладки
 void maj_init();        //предварительное создание поля и его заполнение
-   
-
 void find_tiles();      // нахождение фишек если пользователь их не видит
 bool definition_XY(int *i, int *y, int *k);     // определение координат в массиве
 void core_game();       // основной процесс игры

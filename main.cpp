@@ -1,6 +1,4 @@
 #include "menu.h"
-#include "new_game.h"
-
 
 int main()
 {

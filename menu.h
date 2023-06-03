@@ -8,12 +8,10 @@
 #define width 800
 #define height 600
 
-
 typedef struct button { // обьявление структуры кнопок
    int x, y, dx, dy;
    IMAGE * bmp;
    } Button;
-
 
 // прототипы функций
 void begin();   // приготовление меню и переназначение на окна
@@ -25,5 +23,4 @@ void close_game();      //закрытие графического окна
 void setVSPage();
 void setACPage();
 void continue_game();
-   
 #endif
