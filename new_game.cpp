@@ -73,11 +73,13 @@ void maj_init() //предварительное создание поля и его заполнение
          }
       }
       //присвоение каждой структуре его координаты в массиве, координаты на поле и адрес для размещения картинки
-   for(int k = 0; k < he; k++)
+      int count = 0;
+   for(int k = 0; k < he; k++){
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
          {
             if (Pole[i][j][k].id == 0)  {
+               if (count == 2)  break;
                Pole[i][j][k].id = layout[0].first;
                strcpy(Pole[i][j][k].name, library[layout[0].first].name);
                Pole[i][j][k].i = i;
@@ -87,8 +89,12 @@ void maj_init() //предварительное создание поля и его заполнение
                Pole[i][j][k].y = begOfY + (tileH * j) + k*4;
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
                layout.erase(layout.begin()); 
+               count++;
                } 
+            break;
          }
+         break;
+      }
          
    acc_avl();     //пересчет доступных пар фишек
 }
@@ -105,13 +111,20 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    sprintf(output, "Время: %02d:%02d", (seconds) / 60, (seconds) % 60); // вывод секундомера изменении окна
    outtextxy(210 , 30, output);
    
-   for(int k = 0; k < he; k++)  // выведение картинок фишек
-         for(int j = 0; j < wi; j++)
+   int count = 0;
+   for(int k = 0; k < he; k++){  // выведение картинок фишек
+         for(int j = 0; j < wi; j++){
             for(int i = 0; i < le; i++)
                  {      
+                    if (count == 2)     break;
                     if (Pole[i][j][k].id != -1) {
                      putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
+                     count++;
                   }
+                  break;
+               }
+               break;
+            }
    putimage(10, 10, gMenu.bmp);
    putimage(700, 300, findTiles.bmp);
    setACPage();

@@ -2,7 +2,7 @@
 !main.cpp graphics.h keys_n_colors.h menu.h #<#>
 !menu.cpp graphics.h keys_n_colors.h menu.h new_game.h #<#>
 !menu.h graphics.h keys_n_colors.h #<#>
-!new_game.cpp algorithm cmath ctime graphics.h iostream keys_n_colors.h menu.h new_game.h random utility vector #<#>
+!new_game.cpp algorithm cctype cerrno clocale cmath cstdint cstdio cstdlib ctime ctype.h cwchar cwctype errno.h exception graphics.h initializer_list ios iosfwd iostream istream keys_n_colors.h limits limits.h locale.h math.h menu.h new new_game.h numeric ostream random signal.h stddef.h stdexcept stdint.h stdio.h stdlib.h streambuf string string_view system_error time.h type_traits typeinfo utility vector wchar.h wctype.h #<#>
  struct@TILE _type_ #<new_game.h>
  struct@button _type_ #<menu.h>
 AVOCADO #<new_game.h>
