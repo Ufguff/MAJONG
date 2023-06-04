@@ -2,6 +2,7 @@
 #define _GAME_
 #define AVOCADO COLOR(113, 136, 20)
 #define BEIGE COLOR(247, 224, 193)
+#define PROMPT COLOR(255, 255, 0)
 
 typedef struct TILE {   //структура фишки
    char name[20];

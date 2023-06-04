@@ -38,7 +38,7 @@ void continue_game()
    clearviewport();
    for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
    {
-      sprintf(s, ".//MENU_STUFF/restart%d.bmp", i);
+      sprintf(s, "./MENU_STUFF/restart%d.bmp", i);
       if(i != 0)
       {
          res[i].dx = 280;        res[i].dy = 90;
@@ -75,12 +75,12 @@ void init_menu(){
    for(int i=0; i <4; i++){     // присваивание координат кнопкам а также указание пути
          but[i].dx = 280; but[i].dy = 90; 
          but[i].x = (width / 2) - (buttonW / 2); but[i].y = 180 + i * (but[i].dy+10);   
-         sprintf(file,".//MENU_STUFF/menu%d.bmp", i+1);
+         sprintf(file,"./MENU_STUFF/menu%d.bmp", i+1);
          but[i].bmp = loadBMP(file);
    }
    // тоже самое отдельно для лого
    logo.x = 50; logo.y = 0;
-   logo.bmp = loadBMP(".//MENU_STUFF/menu_majong.gif");
+   logo.bmp = loadBMP("./MENU_STUFF/menu_majong.gif");
 }
 
 
@@ -117,8 +117,8 @@ void rules_about(int st)
 {
    setVSPage();
    clearviewport();
-   if (st == 2) rulAbt.bmp = loadBMP(".//MENU_STUFF/rules.bmp");        //проверка какой файл надо вывести на экран
-   else rulAbt.bmp = loadBMP(".//MENU_STUFF/about.bmp");
+   if (st == 2) rulAbt.bmp = loadBMP("./MENU_STUFF/rules.bmp");        //проверка какой файл надо вывести на экран
+   else rulAbt.bmp = loadBMP("./MENU_STUFF/about.bmp");
    putimage(0, 0, rulAbt.bmp, COPY_PUT);        //вывод
    
    setACPage();

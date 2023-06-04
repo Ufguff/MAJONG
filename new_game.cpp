@@ -121,15 +121,15 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
 void init_game(){       // инициализация библиотеки и раскладки
    setbkcolor(AVOCADO); 
    clearviewport();
-   lose.bmp = loadBMP(".//MENU_STUFF/lose.bmp");
-   win.bmp = loadBMP(".//MENU_STUFF/win.bmp");
-   gMenu.bmp = loadBMP(".//MENU_STUFF/gMenu.bmp");
-   findTiles.bmp = loadBMP(".//MENU_STUFF/find.bmp");
+   lose.bmp = loadBMP("./MENU_STUFF/lose.bmp");
+   win.bmp = loadBMP("./MENU_STUFF/win.bmp");
+   gMenu.bmp = loadBMP("./MENU_STUFF/gMenu.bmp");
+   findTiles.bmp = loadBMP("./MENU_STUFF/find.bmp");
    for (int i = 0; i < 42; i++) { // создание библиотеки фишек
          library[i].id = i;
          if (i < 34)        library[i].count = 4; 
          else library[i].count = 1; 
-         sprintf(library[i].name, ".//TILES/tile%d.bmp", i+1);    
+         sprintf(library[i].name, "./TILES/tile%d.bmp", i+1);    
          library[i].bmp = loadBMP(library[i].name); 
    }
         
@@ -282,7 +282,9 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
+   setcolor(PROMPT);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
+   setcolor(WHITE);
 }
 
 void find_tiles()       // нахождение фишек если пользователь их не видит
@@ -318,7 +320,7 @@ void end()      //окно при закончившихся доступных фишек
    clearviewport();
    for(int i = 0; i < 3; i++)   // указ координат кнопок и их адрес
    {
-      sprintf(s, "MENU_STUFF/exit%d.bmp", i);
+      sprintf(s, "./MENU_STUFF/exit%d.bmp", i);
       if(i != 0)
       {
          but[i].dx = 280;        but[i].dy = 90;
