@@ -73,9 +73,7 @@ void maj_init() //предварительное создание поля и его заполнение
          }
       }
       //присвоение каждой структуре его координаты в массиве, координаты на поле и адрес для размещения картинки
-      int count = 0;
-   for(int k = 0; k < he; k++){
-      for(int j = 0; j < wi; j++)
+      int count = 0, k = 0, j = 0;    
          for(int i = 0; i < le; i++)
          {
             if (Pole[i][j][k].id == 0)  {
@@ -90,12 +88,8 @@ void maj_init() //предварительное создание поля и его заполнение
                Pole[i][j][k].bmp = library[layout[0].first].bmp;
                layout.erase(layout.begin()); 
                count++;
-               } 
-            break;
+               }
          }
-         break;
-      }
-         
    acc_avl();     //пересчет доступных пар фишек
 }
    
@@ -111,19 +105,14 @@ void draw_pole(){       //отрисовывает фишки на поле, а также сколько осталось и
    sprintf(output, "Время: %02d:%02d", (seconds) / 60, (seconds) % 60); // вывод секундомера изменении окна
    outtextxy(210 , 30, output);
    
-   int count = 0;
-   for(int k = 0; k < he; k++){  // выведение картинок фишек
-         for(int j = 0; j < wi; j++){
-            for(int i = 0; i < le; i++)
+    int count = 0, k = 0, j = 0;  
+            for(int i = 0; i < le; i++){
                  {      
                     if (count == 2)     break;
                     if (Pole[i][j][k].id != -1) {
                      putimage(Pole[i][j][k].x, Pole[i][j][k].y, Pole[i][j][k].bmp, TRANSPARENT_PUT);}
                      count++;
                   }
-                  break;
-               }
-               break;
             }
    putimage(10, 10, gMenu.bmp);
    putimage(700, 300, findTiles.bmp);
@@ -146,7 +135,7 @@ void init_game(){       // инициализация библиотеки и раскладки
          library[i].bmp = loadBMP(library[i].name); 
    }
         
-   for (int i = 0; i < 42; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }       //создание раскладки
+   for (int i = 0; i < 2; i++) { for (int j = 1; j <= library[i].count; j++) {    layout.push_back(make_pair(library[i].id, j));     } }       //создание раскладки
    
    shuffle(layout.begin(), layout.end(), rng);        //реализация рандомизации(перемешивание раскладки)
    maj_init();
@@ -159,7 +148,7 @@ void core_game()        // основной процесс игры
    while(1)
    {
       if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
-         
+      
       if(definition_XY(&i1, &j1, &k1))       break;
          
       if(definition_XY(&i2, &j2, &k2))       break;
@@ -171,7 +160,7 @@ void core_game()        // основной процесс игры
          delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
          acc_avl(); //пересчет доступных пар фишек
       }
-      
+      pairAVL = 1;
       if(CON_TILES != 0)     draw_pole();   //отрисовка поля
       else {victory();       break;}
    }
