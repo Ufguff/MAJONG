@@ -15,7 +15,7 @@ const int le = 9, wi = 7, he = 5;      // размеры массива пирамиды
 TILE Pole[le][wi][he];     // обьявление трехмерного массива
 const int tileW = 45, tileH = 55;       //размеры фишки в пикселях
 vector <pair<int, int>> layout; //раскладка фишек
-vector<int> avl_tile;   //массив доступных фишек для их дальнейшего подсчета
+
 vector <TILE> for_find; // промежуточный вектор для поиска find_tiles
 pair<TILE,TILE> founds; // найденная пара для find_tiles
 // для рандомизации раскладки
@@ -145,18 +145,19 @@ void core_game()        // основной процесс игры
    int i1, i2, j1, j2, k1, k2;  //для нахождения позиции в массиве
    while(1)
    {
-      if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
-         
-      if(definition_XY(&i1, &j1, &k1))       break;
-         
-      if(definition_XY(&i2, &j2, &k2))       break;
-      delay(300); 
-      if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
-         
-      //если фишки одинаковы или они одинаковые как сезонные
-      if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
-         delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
-         acc_avl(); //пересчет доступных пар фишек
+         if (pairAVL == 0)    {end();   if(pereB)       {pereB = false; break; }}
+         else{
+            if(definition_XY(&i1, &j1, &k1))       break;
+            
+            if(definition_XY(&i2, &j2, &k2))       break;
+            delay(300); 
+            if (i1 == i2 && j1 == j2 && k1 == k2)     {    draw_pole();    continue;   }      //если одна и та же фишка то игнорируем
+               
+            //если фишки одинаковы или они одинаковые как сезонные
+            if ((Pole[i1][j1][k1].id == Pole[i2][j2][k2].id || is_season(Pole[i1][j1][k1].id, Pole[i2][j2][k2].id)) && is_avalible(&Pole[i1][j1][k1]) && is_avalible(&Pole[i2][j2][k2])){     
+               delete_pair(&Pole[i1][j1][k1], &Pole[i2][j2][k2]);  // удаление фишек из массива
+               if (CON_TILES != 0)      acc_avl(); //пересчет доступных пар фишек
+            }
       }
       
       if(CON_TILES != 0)     draw_pole();   //отрисовка поля
@@ -172,7 +173,8 @@ bool definition_XY(int *i, int *j, int *k)      // определение координат в масси
       if(Pole[*i][*j][kn].id == -1)      continue;
       else{(*k) = kn; break;}
       }
-   if (*k != -1)border(&Pole[*i][*j][*k]);
+   if (!is_avalible(&Pole[*i][*j][*k]))  return false;
+   if (*k != -1){setcolor(WHITE);       border(&Pole[*i][*j][*k]);}
    return false;
 }
 
@@ -193,7 +195,7 @@ bool is_season(int tile1, int tile2)  // проверка сезонная ли фишка
 bool is_avalible(TILE* tile1)   //доступна ли фишка
 {
    int i = tile1->i, j = tile1->j, k = tile1->k;
-   if (((Pole[i][j][k+1].id == -1) && (k + 1) <= he) && ((i+1) < 9 && Pole[i + 1][j][k].id == -1) || ((i - 1) >= 0 && Pole[i - 1][j][k].id == -1) || i == 0 || i == (le - 1))     return true;
+   if (((k == (he - 1)) || Pole[i][j][k+1].id == -1) && (( i == le - 1 || Pole[i + 1][j][k].id == -1) || (i == 0 || Pole[i - 1][j][k].id == -1)))     return true;
    return false;
 }
    
@@ -223,14 +225,14 @@ bool click(int *i, int *j)      // определение какую фишку выбрал пользователь
 
 void acc_avl()  //пересчет доступных пар фишек
 {
-   char output[11];
+   vector<int> avl_tile;   //массив доступных фишек для их дальнейшего подсчета
    int i = 0;
    pairAVL = 0;
    //занесение всех доступных фишек в массив
    for(int k = 0; k < he; k++)
       for(int j = 0; j < wi; j++)
          for(int i = 0; i < le; i++)
-            if(Pole[i][j][k].id != -1 && is_avalible(&Pole[i][j][k]) && (Pole[i][j][k+1].id == -1))      
+            if(Pole[i][j][k].id != -1 && is_avalible(&Pole[i][j][k]))      
             {avl_tile.push_back(Pole[i][j][k].id);      for_find.push_back(Pole[i][j][k]);}
    
    sort(begin(avl_tile), end(avl_tile));        //сортировка по возрастанию
@@ -242,9 +244,8 @@ void acc_avl()  //пересчет доступных пар фишек
    while((i + 1) < avl_tile.size())     //подсчет доступных пар
    {
       if (avl_tile[i] == avl_tile[i + 1] || is_season(avl_tile[i], avl_tile[i+1])){pairAVL++;    avl_tile.erase(avl_tile.begin() + i, avl_tile.begin() + i + 2);}
-      else      i++;
+      else      i++;    // здесь должна быть ошибка под конец игры
    }
-   avl_tile.clear();    //отчистка массива от оставшихся фишек
    for_find.clear();
 }
 
@@ -282,13 +283,12 @@ void mix_at_end()       // перемешивание при отсутсвующих фишках
 
 void border(TILE *tile) // границы при нажатии на фишку(не работает с swapbuffers())
 {
-   setcolor(PROMPT);
    rectangle(tile->x, tile->y, tile->x + tileW, tile->y + tileH);
-   setcolor(WHITE);
 }
 
 void find_tiles()       // нахождение фишек если пользователь их не видит
 {
+   setcolor(PROMPT);
    border(&founds.first);        border(&founds.second);
    TILE temp;   temp.id = -1;
    temp.x = 800;        temp.y = 600;
@@ -297,6 +297,7 @@ void find_tiles()       // нахождение фишек если пользователь их не видит
 }
 void printSW()  // вывод секундомера
 {
+   setcolor(WHITE);
    char s[50];
    sprintf(s, "Время: %02d:%02d", (baseTime + seconds) / 60, (baseTime + seconds) % 60);
    outtextxy(210 , 30, s);
